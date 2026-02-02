@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Tidak ada perubahan yang perlu dilakukan
+        Schema::table('residents', function (Blueprint $table) {
+            $table->enum('gender', ['laki-laki', 'perempuan'])->nullable()->after('name');
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Tidak ada perubahan yang perlu di-reverse
+        Schema::table('residents', function (Blueprint $table) {
+            $table->dropColumn('gender');
+        });
     }
 };

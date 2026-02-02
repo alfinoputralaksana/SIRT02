@@ -48,19 +48,15 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <strong>NIK</strong>
-                            <p>{{ $resident->nik }}</p>
-                        </div>
-                        <div class="col-md-6">
                             <strong>Email</strong>
                             <p>{{ $resident->email }}</p>
                         </div>
+                        <div class="col-md-6">
+                            <strong>Jenis Kelamin</strong>
+                            <p>{{ $resident->gender ? ucfirst($resident->gender) : '-' }}</p>
+                        </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Telepon</strong>
-                            <p>{{ $resident->phone ?? '-' }}</p>
-                        </div>
                         <div class="col-md-6">
                             <strong>Status</strong>
                             <p>
@@ -79,24 +75,6 @@
                     <div class="mb-3">
                         <strong>Alamat</strong>
                         <p>{{ $resident->address }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Informasi Keluarga</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Kepala Keluarga</strong>
-                            <p>{{ $resident->family_head ?? '-' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Jumlah Anggota Keluarga</strong>
-                            <p>{{ $resident->family_members }} orang</p>
-                        </div>
                     </div>
                 </div>
             </div>

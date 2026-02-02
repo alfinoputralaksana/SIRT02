@@ -20,7 +20,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #f5e6c8 0%, #c9dca5 50%, #9ba882 100%);
+            background: white;
             min-height: 100vh;
             font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -50,7 +50,7 @@
             box-shadow: 0 20px 60px rgba(74, 107, 95, 0.15);
             overflow: hidden;
             width: 100%;
-            max-width: 450px;
+            max-width: 800px;
             animation: slideUp 0.5s ease-out;
             border: 1px solid rgba(107, 184, 161, 0.1);
         }
@@ -373,9 +373,7 @@
                     </button>
                 </form>
 
-                <a href="{{ route('user.dashboard') }}" class="btn-back">
-                    <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
-                </a>
+             
             </div>
         </div>
     </main>

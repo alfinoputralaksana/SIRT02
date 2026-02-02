@@ -15,6 +15,12 @@
             <a href="{{ route('admin.residents.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Tambah Warga
             </a>
+            <a href="{{ route('admin.residents.import-show') }}" class="btn btn-info">
+                <i class="fas fa-upload"></i> Impor Data
+            </a>
+            <a href="{{ route('admin.residents.download-template') }}" class="btn btn-success">
+                <i class="fas fa-download"></i> Download Template
+            </a>
         </div>
     </div>
 @else
@@ -51,7 +57,7 @@
 <div class="card">
     <div class="card-header">
         <form method="GET" action="{{ auth()->user()->isAdmin() ? route('admin.residents.search') : route('residents.search') }}" class="d-flex gap-2">
-            <input type="text" name="q" class="form-control" placeholder="Cari nama, NIK, atau email..." value="{{ request('q') }}">
+            <input type="text" name="q" class="form-control" placeholder="Cari nama atau email..." value="{{ request('q') }}">
             <button type="submit" class="btn btn-outline-primary">
                 @if(auth()->user()->isAdmin())
                     <i class="fas fa-search"></i>
@@ -67,9 +73,8 @@
             <thead>
                 <tr>
                     <th>Nama</th>
-                    <th>NIK</th>
+                    <th>Jenis Kelamin</th>
                     <th>Email</th>
-                    <th>Telepon</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </tr>
@@ -78,9 +83,8 @@
                 @forelse ($residents as $resident)
                 <tr>
                     <td><strong>{{ $resident->name }}</strong></td>
-                    <td>{{ $resident->nik }}</td>
+                    <td>{{ $resident->gender ? ucfirst($resident->gender) : '-' }}</td>
                     <td>{{ $resident->email }}</td>
-                    <td>{{ $resident->phone }}</td>
                     <td>
                         @if(auth()->user()->isAdmin())
                             <span class="badge badge-{{ $resident->status === 'active' ? 'success' : 'warning' }}">
@@ -113,7 +117,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center text-muted py-4">
+                    <td colspan="4" class="text-center text-muted py-4">
                         @if(auth()->user()->isAdmin())
                             <i class="fas fa-inbox"></i>
                         @else

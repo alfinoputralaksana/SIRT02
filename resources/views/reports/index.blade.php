@@ -47,7 +47,7 @@
                     @forelse ($reports as $report)
                     <tr>
                         <td><strong>{{ $report->title }}</strong></td>
-                        <td>{{ $report->resident->name }}</td>
+                        <td>{{ $report->headOfFamily->nama ?? ($report->resident->headOfFamily->nama ?? 'N/A') }}</td>
                         <td>
                             <span class="badge badge-info">{{ ucfirst(str_replace('_', ' ', $report->category)) }}</span>
                         </td>
@@ -184,7 +184,22 @@
                                         <p>{{ $report->description }}</p>
                                     </div>
 
-                                    @if($report->evidence_image)
+                                    @if($report->evidence_images && count($report->evidence_images) > 0)
+                                    <div class="mb-3">
+                                        <strong>Foto Bukti ({{ count($report->evidence_images) }})</strong>
+                                        <div class="mt-3">
+                                            <div class="row g-3">
+                                                @foreach($report->evidence_images as $image)
+                                                <div class="col-12 col-sm-6">
+                                                    <div style="overflow: hidden; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                                                        <img src="{{ asset('storage/' . $image) }}" alt="Bukti" style="width: 100%; height: 250px; object-fit: cover; cursor: pointer; display: block;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="setModalImage(this.src)">
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @elseif($report->evidence_image)
                                     <div class="mb-3">
                                         <strong>Foto Bukti</strong>
                                         <div class="mt-2">
@@ -198,7 +213,27 @@
                                     <div class="mb-3">
                                         <strong>Respons Admin</strong>
                                         <p>{{ $report->admin_response }}</p>
-                                        <small class="text-muted">
+                                        
+                                        @if($report->admin_file)
+                                        <div class="mt-3">
+                                            <strong>File/Dokumen Terlampir</strong>
+                                            <div class="mt-2">
+                                                @php
+                                                    $ext = strtolower(pathinfo($report->admin_file, PATHINFO_EXTENSION));
+                                                    $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif']);
+                                                @endphp
+                                                @if($isImage)
+                                                    <img src="{{ asset('storage/' . $report->admin_file) }}" alt="File Admin" style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="setModalImage(this.src)">
+                                                @else
+                                                    <a href="{{ asset('storage/' . $report->admin_file) }}" class="btn btn-sm btn-primary" download>
+                                                        <i class="bi bi-download"></i> Download File
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @endif
+                                        
+                                        <small class="text-muted d-block mt-3">
                                             Direspons: {{ $report->responded_at->format('d M Y H:i') }}
                                         </small>
                                     </div>
@@ -242,27 +277,6 @@
                     <form action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data" id="createReportForm">
                         @csrf
 
-                        <!-- Warga Selection -->
-                        <div class="mb-4">
-                            <label for="resident_id" class="form-label">
-                                <i class="bi bi-person"></i> Pilih Warga
-                            </label>
-                            <select class="form-select @error('resident_id') is-invalid @enderror" 
-                                    id="resident_id" name="resident_id" required style="padding: 10px 15px; border-radius: 6px;">
-                                <option value="">-- Pilih Warga --</option>
-                                @foreach ($residents as $resident)
-                                    <option value="{{ $resident->id }}" {{ old('resident_id') == $resident->id ? 'selected' : '' }}>
-                                        {{ $resident->name }} ({{ $resident->nik }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('resident_id')
-                                <div class="invalid-feedback" style="display: block;">
-                                    <i class="bi bi-exclamation-circle"></i> {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
                         <!-- Judul Laporan -->
                         <div class="mb-4">
                             <label for="title" class="form-label">
@@ -304,17 +318,17 @@
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <label for="evidence_image" class="form-label">
-                                    <i class="bi bi-image"></i> Foto Bukti
+                                <label for="evidence_images" class="form-label">
+                                    <i class="bi bi-image"></i> Foto Bukti (Max 3)
                                 </label>
                                 <input type="file" 
-                                       class="form-control @error('evidence_image') is-invalid @enderror" 
-                                       id="evidence_image" name="evidence_image" accept="image/*"
+                                       class="form-control @error('evidence_images.*') is-invalid @enderror" 
+                                       id="evidence_images" name="evidence_images[]" accept="image/*" multiple
                                        style="padding: 10px 15px; border-radius: 6px;">
                                 <div style="font-size: 0.85rem; color: #7f8c8d; margin-top: 5px;">
-                                    <i class="bi bi-info-circle"></i> Format: JPG, PNG, GIF (max 5MB)
+                                    <i class="bi bi-info-circle"></i> Format: JPG, PNG, GIF (max 2MB per file, maksimal 3 file)
                                 </div>
-                                @error('evidence_image')
+                                @error('evidence_images.*')
                                     <div class="invalid-feedback" style="display: block;">
                                         <i class="bi bi-exclamation-circle"></i> {{ $message }}
                                     </div>
@@ -355,6 +369,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Modal for Zoom -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Foto Bukti</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Bukti" style="width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setModalImage(src) {
+            document.getElementById('modalImage').src = src;
+        }
+    </script>
 
 @endif
 

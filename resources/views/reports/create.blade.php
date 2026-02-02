@@ -126,27 +126,6 @@
             <form action="{{ route('reports.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <!-- Warga Selection -->
-                <div class="mb-4">
-                    <label for="resident_id" class="form-label">
-                        <i class="bi bi-person"></i> Pilih Warga
-                    </label>
-                    <select class="form-select @error('resident_id') is-invalid @enderror" 
-                            id="resident_id" name="resident_id" required style="padding: 10px 15px; border-radius: 6px;">
-                        <option value="">-- Pilih Warga --</option>
-                        @foreach ($residents as $resident)
-                            <option value="{{ $resident->id }}" {{ old('resident_id') == $resident->id ? 'selected' : '' }}>
-                                {{ $resident->name }} ({{ $resident->nik }})
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('resident_id')
-                        <div class="invalid-feedback" style="display: block;">
-                            <i class="bi bi-exclamation-circle"></i> {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-
                 <!-- Judul Laporan -->
                 <div class="mb-4">
                     <label for="title" class="form-label">
@@ -188,17 +167,17 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label for="evidence_image" class="form-label">
-                            <i class="bi bi-image"></i> Foto Bukti
+                        <label for="evidence_images" class="form-label">
+                            <i class="bi bi-image"></i> Foto Bukti (Max 3)
                         </label>
                         <input type="file" 
-                               class="form-control @error('evidence_image') is-invalid @enderror" 
-                               id="evidence_image" name="evidence_image" accept="image/*"
+                               class="form-control @error('evidence_images.*') is-invalid @enderror" 
+                               id="evidence_images" name="evidence_images[]" accept="image/*" multiple
                                style="padding: 10px 15px; border-radius: 6px;">
                         <div class="form-text-small">
-                            <i class="bi bi-info-circle"></i> Format: JPG, PNG, GIF (max 5MB)
+                            <i class="bi bi-info-circle"></i> Format: JPG, PNG, GIF (max 2MB per file, maksimal 3 file)
                         </div>
-                        @error('evidence_image')
+                        @error('evidence_images.*')
                             <div class="invalid-feedback" style="display: block;">
                                 <i class="bi bi-exclamation-circle"></i> {{ $message }}
                             </div>

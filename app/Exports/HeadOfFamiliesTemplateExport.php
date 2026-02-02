@@ -15,10 +15,10 @@ class HeadOfFamiliesTemplateExport implements FromArray, WithHeadings, ShouldAut
     {
         return [
             // Example row
-            [
+            [       
                 'nama' => 'Contoh Nama',
                 'alamat' => 'Jl. Contoh No. 123',
-                'email' => 'contoh@email.com',
+                'email' => 'contoh@gmail.com',
                 'password' => 'password123',
                 'active' => 1,
             ],

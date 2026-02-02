@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Tidak ada perubahan yang perlu dilakukan
+        Schema::table('reports', function (Blueprint $table) {
+            $table->json('evidence_images')->nullable()->after('evidence_image');
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Tidak ada perubahan yang perlu di-reverse
+        Schema::table('reports', function (Blueprint $table) {
+            $table->dropColumn('evidence_images');
+        });
     }
 };

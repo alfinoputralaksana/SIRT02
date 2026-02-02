@@ -84,6 +84,17 @@
 
                 <hr>
 
+                @if($letter->identity_image)
+                    <div class="mb-3">
+                        <h6 class="text-muted">Foto KTP/KK</h6>
+                        <div class="card border-light">
+                            <div class="card-body p-2">
+                                <img src="{{ asset('storage/' . $letter->identity_image) }}" alt="KTP/KK" class="img-fluid rounded" style="max-width: 100%; max-height: 500px; object-fit: contain;">
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="mb-3">
                     <h6 class="text-muted">Catatan Admin</h6>
                     <p>{{ $letter->admin_notes ?? '<em class="text-muted">Belum ada catatan</em>' }}</p>

@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Tidak ada perubahan yang perlu dilakukan
+        Schema::table('residents', function (Blueprint $table) {
+            $table->dropColumn(['family_head', 'family_members']);
+        });
     }
 
     /**
@@ -19,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Tidak ada perubahan yang perlu di-reverse
+        Schema::table('residents', function (Blueprint $table) {
+            $table->string('family_head')->nullable();
+            $table->integer('family_members')->default(1);
+        });
     }
 };

@@ -11,7 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Tidak ada perubahan yang perlu dilakukan
+        Schema::table('reports', function (Blueprint $table) {
+            $table->dropForeign(['resident_id']);
+            $table->dropColumn('resident_id');
+        });
     }
 
     /**
@@ -19,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Tidak ada perubahan yang perlu di-reverse
+        Schema::table('reports', function (Blueprint $table) {
+            $table->unsignedBigInteger('resident_id')->nullable()->after('id');
+        });
     }
 };

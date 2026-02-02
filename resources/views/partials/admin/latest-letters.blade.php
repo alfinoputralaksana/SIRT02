@@ -16,11 +16,11 @@
                     <li class="item">
                         <div class="product-info">
                             <a href="{{ route('admin.letters.show', $letter->id) }}" class="product-title">
-                                {{ $letter->type ?? 'Surat' }}
+                                {{ $letter->category->name ?? 'Surat' }}
                                 <span class="badge badge-success float-right">{{ $letter->created_at->format('d M Y') }}</span>
                             </a>
                             <span class="product-description">
-                                {{ $letter->resident->name ?? 'N/A' }}
+                                Pemohon: {{ $letter->applicant_name ?? 'N/A' }}
                             </span>
                         </div>
                     </li>

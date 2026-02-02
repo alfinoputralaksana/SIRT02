@@ -91,21 +91,21 @@
                     <td>{{ $letter->ready_at ? $letter->ready_at->format('d M Y') : '-' }}</td>
                     <td>
                         @if(auth()->check() && auth()->user()->isAdmin())
-                            <a href="{{ route('admin.letters.show', $letter) }}" class="btn btn-sm btn-info">
-                                <i class="fas fa-eye"></i> Lihat
+                            <a href="{{ route('admin.letters.show', $letter) }}" class="btn btn-xs btn-info btn-outline-info">
+                                Lihat
                             </a>
-                            <a href="{{ route('admin.letters.edit', $letter) }}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-edit"></i> Edit
+                            <a href="{{ route('admin.letters.edit', $letter) }}" class="btn btn-xs btn-warning btn-outline-warning">
+                                Edit
                             </a>
                         @else
-                            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#letterDetailModal{{ $letter->id }}">
-                                <i class="bi bi-eye"></i> Lihat
+                            <button type="button" class="btn btn-xs btn-info btn-outline-info" data-bs-toggle="modal" data-bs-target="#letterDetailModal{{ $letter->id }}">
+                                Lihat
                             </button>
                             <form action="{{ route('letters.destroy', $letter) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus permintaan surat ini?')">
-                                    <i class="bi bi-trash"></i> Hapus
+                                <button type="submit" class="btn btn-xs btn-danger btn-outline-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus permintaan surat ini?')">
+                                    Hapus
                                 </button>
                             </form>
                         @endif
@@ -205,6 +205,17 @@
                         <p>{{ $letter->taken_at->format('d M Y H:i') }}</p>
                     </div>
                     @endif
+                </div>
+                @endif
+
+                @if($letter->identity_image)
+                <div class="mb-3">
+                    <strong>Foto KTP/KK</strong>
+                    <div class="card border-light mt-2">
+                        <div class="card-body p-2">
+                            <img src="{{ asset('storage/' . $letter->identity_image) }}" alt="KTP/KK" class="img-fluid rounded" style="max-width: 100%; max-height: 400px; object-fit: contain;">
+                        </div>
+                    </div>
                 </div>
                 @endif
 

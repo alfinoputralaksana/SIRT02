@@ -28,10 +28,10 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <strong>Warga</strong>
+                                <strong>Kepala Keluarga</strong>
                                 <p>
-                                    <a href="{{ route('residents.show', $report->resident) }}">
-                                        {{ $report->resident->name }}
+                                    <a href="{{ route('admin.head-of-families.show', $report->headOfFamily) }}">
+                                        {{ $report->headOfFamily->nama }}
                                     </a>
                                 </p>
                             </div>
@@ -63,7 +63,22 @@
                             <p>{{ $report->description }}</p>
                         </div>
 
-                        @if($report->evidence_image)
+                        @if($report->evidence_images && count($report->evidence_images) > 0)
+                        <div class="mb-3">
+                            <strong>Foto Bukti ({{ count($report->evidence_images) }})</strong>
+                            <div class="mt-3">
+                                <div class="row g-3">
+                                    @foreach($report->evidence_images as $image)
+                                    <div class="col-12 col-sm-6">
+                                        <div style="overflow: hidden; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                                            <img src="{{ asset('storage/' . $image) }}" alt="Bukti" style="width: 100%; height: 250px; object-fit: cover; cursor: pointer; display: block;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="setModalImage(this.src)">
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        @elseif($report->evidence_image)
                         <div class="mb-3">
                             <strong>Foto Bukti</strong>
                             <div class="mt-2">
@@ -81,7 +96,23 @@
                     </div>
                     <div class="card-body">
                         <p>{{ $report->admin_response }}</p>
-                        <small class="text-muted">
+                        
+                        @if($report->admin_file)
+                        <div class="mt-3">
+                            <strong>File/Dokumen Terlampir</strong>
+                            <div class="mt-2">
+                                @if(in_array(pathinfo($report->admin_file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
+                                    <img src="{{ asset('storage/' . $report->admin_file) }}" alt="File Admin" style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="setModalImage(this.src)">
+                                @else
+                                    <a href="{{ asset('storage/' . $report->admin_file) }}" class="btn btn-sm btn-primary" download>
+                                        <i class="bi bi-download"></i> Download File
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+                        
+                        <small class="text-muted d-block mt-3">
                             Direspons: {{ $report->responded_at->format('d M Y H:i') }}
                         </small>
                     </div>
@@ -92,22 +123,22 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0">Informasi Warga</h5>
+                        <h5 class="mb-0">Informasi Kepala Keluarga</h5>
                     </div>
                     <div class="card-body">
                         <p>
                             <strong>Nama</strong><br>
-                            {{ $report->resident->name }}
+                            {{ $report->headOfFamily->nama }}
                         </p>
                         <p>
                             <strong>Email</strong><br>
-                            {{ $report->resident->email }}
+                            {{ $report->headOfFamily->email }}
                         </p>
                         <p>
-                            <strong>Telepon</strong><br>
-                            {{ $report->resident->phone ?? '-' }}
+                            <strong>Alamat</strong><br>
+                            {{ $report->headOfFamily->alamat ?? '-' }}
                         </p>
-                        <a href="{{ route('residents.show', $report->resident) }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('admin.head-of-families.show', $report->headOfFamily) }}" class="btn btn-sm btn-outline-primary">
                             Lihat Profil
                         </a>
                     </div>
@@ -174,7 +205,27 @@
                         <p>{{ $report->description }}</p>
                     </div>
 
-                    @if($report->evidence_image)
+                    @if($report->evidence_images && count($report->evidence_images) > 0)
+                    <div class="mb-3">
+                        <strong>Foto Bukti ({{ count($report->evidence_images) }})</strong>
+                        <div class="mt-3">
+                            <div class="row g-3">
+                                @foreach($report->evidence_images as $image)
+                                <div class="col-12 col-sm-6">
+                                    <div style="overflow: hidden; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
+                                        <img src="{{ asset('storage/' . $image) }}" alt="Bukti" style="width: 100%; height: 250px; object-fit: cover; cursor: pointer; display: block;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="setModalImage(this.src)">
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    @elseif($report->evidence_image)
                     <div class="mb-3">
                         <strong>Foto Bukti</strong>
                         <div class="mt-2">
@@ -188,7 +239,23 @@
                     <div class="mb-3">
                         <strong>Respons Admin</strong>
                         <p>{{ $report->admin_response }}</p>
-                        <small class="text-muted">
+                        
+                        @if($report->admin_file)
+                        <div class="mt-3">
+                            <strong>File/Dokumen Terlampir</strong>
+                            <div class="mt-2">
+                                @if(in_array(pathinfo($report->admin_file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
+                                    <img src="{{ asset('storage/' . $report->admin_file) }}" alt="File Admin" style="max-width: 100%; height: auto; border-radius: 8px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="setModalImage(this.src)">
+                                @else
+                                    <a href="{{ asset('storage/' . $report->admin_file) }}" class="btn btn-sm btn-primary" download>
+                                        <i class="bi bi-download"></i> Download File
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
+                        
+                        <small class="text-muted d-block mt-3">
                             Direspons: {{ $report->responded_at->format('d M Y H:i') }}
                         </small>
                     </div>
@@ -211,5 +278,27 @@
             });
         });
     </script>
+
+    <!-- Image Modal for Zoom -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Foto Bukti</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Bukti" style="width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setModalImage(src) {
+            document.getElementById('modalImage').src = src;
+        }
+    </script>
 @endif
+
 @endsection

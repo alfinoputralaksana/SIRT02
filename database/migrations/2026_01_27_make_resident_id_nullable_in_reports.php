@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Tidak ada perubahan yang perlu dilakukan
+        Schema::table('reports', function (Blueprint $table) {
+            // Tidak ada perubahan yang perlu dilakukan
+        });
     }
 
     /**

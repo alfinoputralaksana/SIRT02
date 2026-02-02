@@ -68,6 +68,9 @@ Route::middleware('auth')->group(function () {
         // Admin can manage all resources
         Route::resource('residents', ResidentController::class);
         Route::get('/residents/search', [ResidentController::class, 'search'])->name('residents.search');
+        Route::get('/residents/import/show', [ResidentController::class, 'importShow'])->name('residents.import-show');
+        Route::post('/residents/import', [ResidentController::class, 'import'])->name('residents.import');
+        Route::get('/residents/download/template', [ResidentController::class, 'downloadTemplate'])->name('residents.download-template');
         // Admin can only view and update reports (not create), and delete
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/{report}', [ReportController::class, 'show'])->name('reports.show');

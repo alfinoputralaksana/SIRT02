@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resident;
+use App\Imports\ResidentsImport;
+use App\Exports\ResidentsTemplateExport;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ResidentController extends Controller
 {
@@ -32,12 +36,9 @@ class ResidentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'nik' => 'required|string|unique:residents,nik|size:16',
-            'phone' => 'nullable|string|max:20',
+            'gender' => 'nullable|in:laki-laki,perempuan',
             'email' => 'required|email|unique:residents,email',
             'address' => 'required|string',
-            'family_head' => 'nullable|string|max:255',
-            'family_members' => 'required|integer|min:1',
             'status' => 'required|in:active,inactive,pindah',
             'notes' => 'nullable|string',
         ]);
@@ -62,12 +63,9 @@ class ResidentController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'nik' => 'required|string|size:16|unique:residents,nik,' . $resident->id,
-            'phone' => 'nullable|string|max:20',
+            'gender' => 'nullable|in:laki-laki,perempuan',
             'email' => 'required|email|unique:residents,email,' . $resident->id,
             'address' => 'required|string',
-            'family_head' => 'nullable|string|max:255',
-            'family_members' => 'required|integer|min:1',
             'status' => 'required|in:active,inactive,pindah',
             'notes' => 'nullable|string',
         ]);
@@ -93,4 +91,27 @@ class ResidentController extends Controller
 
         return view('residents.index', compact('residents'));
     }
-}
+
+    public function importShow(): View
+    {
+        return view('residents.import');
+    }
+
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            Excel::import(new ResidentsImport(), $request->file('file'));
+            return redirect()->route('admin.residents.index')->with('success', 'Data warga berhasil diimpor');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengimpor file: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate(): BinaryFileResponse
+    {
+        return Excel::download(new ResidentsTemplateExport(), 'template-data-warga.xlsx');
+    }}

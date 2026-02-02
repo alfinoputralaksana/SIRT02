@@ -69,15 +69,3 @@
     </div>
 </div>
 @endsection
-                            </button>
-                            <a href="{{ route('reports.show', $report) }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg"></i> Batal
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection

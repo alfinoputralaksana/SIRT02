@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Letter extends Model
 {
     protected $fillable = [
-        'resident_id',
         'applicant_name',
         'applicant_nik',
         'identity_image',

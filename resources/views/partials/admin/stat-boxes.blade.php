@@ -8,11 +8,26 @@
                 <p>Data Warga</p>
             </div>
             <div class="icon">
-                <i class="ion ion-bag"></i>
+                <i class="ion ion-person-stalker"></i>
             </div>
             <a href="{{ route('admin.residents.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
+     <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>{{ \App\Models\HeadOfFamily::count() }}</h3>
+                <p>Total Kepala Keluarga</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person"></i>
+            </div>
+            <a href="#" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
     <!-- ./col -->
     <div class="col-lg-3 col-6">
         <!-- small box -->
@@ -22,7 +37,7 @@
                 <p>Laporan Warga</p>
             </div>
             <div class="icon">
-                <i class="ion ion-stats-bars"></i>
+                <i class="ion ion-document-text"></i>
             </div>
             <a href="{{ route('admin.reports.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -36,25 +51,11 @@
                 <p>Pembuatan Surat</p>
             </div>
             <div class="icon">
-                <i class="ion ion-person-add"></i>
+                <i class="ion ion-compose"></i>
             </div>
             <a href="{{ route('admin.letters.index') }}" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-danger">
-            <div class="inner">
-                <h3>{{ \App\Models\User::where('role', 'user')->count() }}</h3>
-                <p>Total User</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="#" class="small-box-footer">Lihat Detail <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-    <!-- ./col -->
+   
 </div>
 <!-- /.row -->

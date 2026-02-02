@@ -75,6 +75,17 @@
         </div>
         @endif
 
+        @if($letter->identity_image)
+        <div class="mb-4">
+            <h6 class="text-muted">Foto KTP/KK</h6>
+            <div class="card border-light">
+                <div class="card-body">
+                    <img src="{{ asset('storage/' . $letter->identity_image) }}" alt="KTP/KK" class="img-fluid rounded" style="max-width: 100%; max-height: 500px; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+        @endif
+
         @if($letter->letter_file)
         <div class="mb-4">
             <h6 class="text-muted">File Surat</h6>
