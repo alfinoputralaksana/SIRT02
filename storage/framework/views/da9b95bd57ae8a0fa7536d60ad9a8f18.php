@@ -31,7 +31,7 @@
 
 <body class="index-page">
 
-  @include('partials.header')
+  <?php echo $__env->make('partials.header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
   <main class="main">
 
@@ -43,17 +43,17 @@
             <h2>Sistem Informasi<br><span style="color: #6bb8a1;">Administrasi RT</span></h2>
             <p class="lead">Solusi digital modern untuk pengelolaan administrasi Rukun Tetangga yang lebih efisien dan terpercaya dengan teknologi terkini</p>
             <div class="cta-buttons" data-aos="fade-up" data-aos-delay="300">
-              @auth
-                @if(auth()->user()->role === 'admin')
-                  <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Dashboard Admin</a>
-                @else
-                  <a href="{{ route('dashboard') }}" class="btn btn-primary">Dashboard</a>
-                @endif
-                <a href="{{ route('chatbot.index') }}" class="btn btn-outline">Konsultasi dengan Bot</a>
-              @else
-                <a href="{{ route('login') }}" class="btn btn-primary">Login Sekarang</a>
+              <?php if(auth()->guard()->check()): ?>
+                <?php if(auth()->user()->role === 'admin'): ?>
+                  <a href="<?php echo e(route('admin.dashboard')); ?>" class="btn btn-primary">Dashboard Admin</a>
+                <?php else: ?>
+                  <a href="<?php echo e(route('dashboard')); ?>" class="btn btn-primary">Dashboard</a>
+                <?php endif; ?>
+                <a href="<?php echo e(route('chatbot.index')); ?>" class="btn btn-outline">Konsultasi dengan Bot</a>
+              <?php else: ?>
+                <a href="<?php echo e(route('login')); ?>" class="btn btn-primary">Login Sekarang</a>
 
-              @endauth
+              <?php endif; ?>
             </div>
           </div>
           <div class="col-lg-6">
@@ -178,54 +178,54 @@
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row g-4">
-          @forelse($latestNews as $index => $item)
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ ($index + 1) * 100 }}">
+          <?php $__empty_1 = true; $__currentLoopData = $latestNews; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="<?php echo e(($index + 1) * 100); ?>">
               <div class="news-card">
                 <div class="news-image">
-                  @if($item->image)
-                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="img-fluid">
-                  @else
+                  <?php if($item->image): ?>
+                    <img src="<?php echo e(asset('storage/' . $item->image)); ?>" alt="<?php echo e($item->title); ?>" class="img-fluid">
+                  <?php else: ?>
                     <div style="background: linear-gradient(135deg, #A8D5BA 0%, #C5E8A0 100%); height: 250px; display: flex; align-items: center; justify-content: center;">
                       <i class="bi bi-newspaper" style="font-size: 3rem; color: rgba(44, 62, 80, 0.2);"></i>
                     </div>
-                  @endif
-                  <span class="news-date">{{ $item->published_at->format('d M Y') }}</span>
+                  <?php endif; ?>
+                  <span class="news-date"><?php echo e($item->published_at->format('d M Y')); ?></span>
                 </div>
                 <div class="news-content">
                   <div class="news-category">
-                    @if(str_contains($item->title, 'Pengumuman'))
+                    <?php if(str_contains($item->title, 'Pengumuman')): ?>
                       Pengumuman
-                    @elseif(str_contains($item->title, 'Program'))
+                    <?php elseif(str_contains($item->title, 'Program')): ?>
                       Program
-                    @elseif(str_contains($item->title, 'Rapat'))
+                    <?php elseif(str_contains($item->title, 'Rapat')): ?>
                       Rapat
-                    @elseif(str_contains($item->title, 'Renovasi') || str_contains($item->title, 'Perbaikan'))
+                    <?php elseif(str_contains($item->title, 'Renovasi') || str_contains($item->title, 'Perbaikan')): ?>
                       Infrastruktur
-                    @elseif(str_contains($item->title, 'Kesehatan'))
+                    <?php elseif(str_contains($item->title, 'Kesehatan')): ?>
                       Kesehatan
-                    @elseif(str_contains($item->title, 'Kebersihan'))
+                    <?php elseif(str_contains($item->title, 'Kebersihan')): ?>
                       Lingkungan
-                    @elseif(str_contains($item->title, 'Olahraga') || str_contains($item->title, 'Rekreasi'))
+                    <?php elseif(str_contains($item->title, 'Olahraga') || str_contains($item->title, 'Rekreasi')): ?>
                       Kegiatan
-                    @else
+                    <?php else: ?>
                       Pengumuman
-                    @endif
+                    <?php endif; ?>
                   </div>
-                  <h3>{{ $item->title }}</h3>
-                  <p>{{ Str::limit(strip_tags($item->content), 100, '...') }}</p>
-                  <a href="{{ route('news.show', $item->slug) }}" class="read-more">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
+                  <h3><?php echo e($item->title); ?></h3>
+                  <p><?php echo e(Str::limit(strip_tags($item->content), 100, '...')); ?></p>
+                  <a href="<?php echo e(route('news.show', $item->slug)); ?>" class="read-more">Baca Selengkapnya <i class="bi bi-arrow-right"></i></a>
                 </div>
               </div>
             </div>
-          @empty
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="col-12 text-center py-5">
               <p class="text-muted">Belum ada berita yang tersedia</p>
             </div>
-          @endforelse
+          <?php endif; ?>
         </div>
 
         <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="700">
-          <a href="{{ route('news.index') }}" class="btn btn-primary">Lihat Semua Berita</a>
+          <a href="<?php echo e(route('news.index')); ?>" class="btn btn-primary">Lihat Semua Berita</a>
         </div>
       </div>
 
@@ -389,7 +389,7 @@ Surat Keterangan Aktif Sekolah: Dari kepala sekolah/madrasah.</p>
     
   </main>
 
-  @include('partials.footer')
+  <?php echo $__env->make('partials.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -405,10 +405,11 @@ Surat Keterangan Aktif Sekolah: Dari kepala sekolah/madrasah.</p>
   <script src="assets/js/main.js"></script>
 
   <!-- Chatbot Modal -->
-  @auth
-    @include('partials.chatbot-modal')
-  @endauth
+  <?php if(auth()->guard()->check()): ?>
+    <?php echo $__env->make('partials.chatbot-modal', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+  <?php endif; ?>
 
 </body>
 
 </html>
+<?php /**PATH /Applications/MAMP/htdocs/SIRT02/resources/views/index.blade.php ENDPATH**/ ?>

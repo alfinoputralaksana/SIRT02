@@ -7277,3 +7277,7 @@
 #34 C:/laragon/www/sirt02/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('C://laragon//www//...')
 #35 {main}
 "} 
+[2026-02-10 13:47:55] local.ERROR: Maximum execution time of 30 seconds exceeded {"userId":1,"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at /Applications/MAMP/htdocs/SIRT02/vendor/laravel/framework/src/Illuminate/Hashing/BcryptHasher.php:61)
+[stacktrace]
+#0 {main}
+"} 
