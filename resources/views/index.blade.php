@@ -256,36 +256,15 @@
               <div class="faq-item faq-active">
                 <h3>Syarat Pengajuan KIP (Kartu Indonesia Pintar)</h3>
                 <div class="faq-content">
-                  <p>KIP untuk Siswa (SD, SMP, SMA/SMK)
-Program ini biasanya disebut sebagai Program Indonesia Pintar (PIP). Syarat utamanya adalah siswa harus terdaftar di Dapodik sekolah.
-
-Dokumen yang perlu disiapkan:
-
-Kartu Keluarga (KK): Asli dan fotokopi terbaru.
-
-Akta Kelahiran Siswa: Fotokopi.
-
-KTP Orang Tua/Wali: Fotokopi.
-
-Bukti Pendukung Ekonomi (Pilih salah satu):
-
-Kartu Keluarga Sejahtera (KKS).
-
-Kartu Program Keluarga Harapan (PKH).
-
-Surat Keterangan Tidak Mampu (SKTM) dari RT/RW dan Kelurahan (jika tidak punya KKS/PKH).
-
-Rapor Hasil Belajar: Fotokopi rapor terakhir.
-
-Surat Keterangan Aktif Sekolah: Dari kepala sekolah/madrasah.</p>
+                  <p>Siapkan fotokopi KK, Akta Kelahiran, KTP Orang Tua, Rapor, dan Surat Keterangan Aktif Sekolah. Lampirkan juga kartu KKS/PKH atau SKTM dari Kelurahan sebagai bukti ekonomi. Untuk mengurusnya, minta Surat Pengantar RT guna pembuatan SKTM di Kelurahan, lalu serahkan seluruh berkas tersebut ke Operator Sekolah. Pastikan data identitas sudah sesuai dan anak terdaftar aktif di sekolah.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Feugiat scelerisque varius morbi enim nunc faucibus?</h3>
+                <h3>Persyaratan Pembuatan KTP?</h3>
                 <div class="faq-content">
-                  <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
+                  <p>Untuk mengurus KTP, warga cukup membawa fotokopi Kartu Keluarga (KK) terbaru ke kantor Kelurahan atau Kecamatan. Bagi pemula (usia 17 tahun), pastikan sudah terdaftar di KK dan membawa fotokopi Akta Kelahiran sebagai pendukung. Proses dimulai dengan meminta surat pengantar dari RT/RW, lalu datang ke lokasi pelayanan untuk melakukan perekaman foto dan biometrik. Pastikan data di KK sudah benar untuk menghindari kesalahan cetak.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
