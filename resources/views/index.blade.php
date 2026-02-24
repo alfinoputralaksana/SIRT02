@@ -67,6 +67,43 @@
       </div>
     </section>
 
+    <!-- Vision Mission Section -->
+    <section id="vision-mission" class="vision-mission section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="section-title">
+          <h2>Visi & Misi</h2>
+          <p>Komitmen kami dalam melayani masyarakat</p>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="vision-mission-card vision-card">
+              <div class="vision-mission-icon">
+                <i class="bi bi-eye"></i>
+              </div>
+              <h3>Visi</h3>
+              <p>Mewujudkan Rukun Tetangga yang harmonis, transparan, dan berbasis teknologi digital untuk meningkatkan kualitas hidup dan kesejahteraan masyarakat</p>
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="vision-mission-card mission-card">
+              <div class="vision-mission-icon">
+                <i class="bi bi-target"></i>
+              </div>
+              <h3>Misi</h3>
+              <ul class="mission-list">
+                <li><i class="bi bi-check-circle-fill"></i> Menyediakan platform digital untuk pengelolaan administrasi RT yang efisien</li>
+                <li><i class="bi bi-check-circle-fill"></i> Meningkatkan komunikasi dan transparansi antar warga dan pengurus RT</li>
+                <li><i class="bi bi-check-circle-fill"></i> Mempercepat proses pelayanan administratif kepada seluruh warga</li>
+                <li><i class="bi bi-check-circle-fill"></i> Memberdayakan masyarakat melalui teknologi informasi</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Features Section -->
     <section id="features" class="features section">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -127,6 +164,48 @@
       </div>
     </section>
 
+    <!-- Statistics Section -->
+    <section id="statistics" class="statistics section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="section-title">
+          <h2>Statistik Warga</h2>
+          <p>Data jumlah warga RT saat ini</p>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-12" data-aos="fade-up" data-aos-delay="100">
+            <div class="stats-card text-center">
+              <div class="stats-icon">
+                <i class="bi bi-people"></i>
+              </div>
+              <h3>{{ $totalResidents }}</h3>
+              <p>Total Warga</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 col-sm-12" data-aos="fade-up" data-aos-delay="200">
+            <div class="stats-card text-center">
+              <div class="stats-icon male">
+                <i class="bi bi-person"></i>
+              </div>
+              <h3>{{ $maleResidents }}</h3>
+              <p>Warga Laki-laki</p>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 col-sm-12" data-aos="fade-up" data-aos-delay="300">
+            <div class="stats-card text-center">
+              <div class="stats-icon female">
+                <i class="bi bi-person"></i>
+              </div>
+              <h3>{{ $femaleResidents }}</h3>
+              <p>Warga Perempuan</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
    
 
   </main>
@@ -151,9 +230,172 @@
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row justify-content-center">
-          <div class="col-lg-6 col-md-8">
-            <div class="featured-img-wrapper text-center">
-              <img src="assets/img/susunanrt.png" class="featured-img" alt="Struktur Pengurus RT" style="max-width: 100%; height: auto; border-radius: 10px;">
+          <div class="col-lg-12">
+            <div class="org-chart">
+              <!-- Level 1: KETUA -->
+              <div class="org-level level-1" data-aos="fade-up" data-aos-delay="100">
+                <div class="row justify-content-center">
+                  <div class="col-lg-3">
+                    <div class="org-card text-center">
+                      <div class="org-card-header bg-primary">
+                        <i class="bi bi-person-fill" style="font-size: 2rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h5 class="mb-2">KETUA</h5>
+                        <p class="mb-0 fw-bold">Hudariati</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SVG Connector - Level 1 to Level 2 -->
+              <svg class="connector-svg" viewBox="0 0 100 80" preserveAspectRatio="none">
+                <line x1="50" y1="0" x2="50" y2="30" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="50" y1="30" x2="20" y2="30" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="50" y1="30" x2="80" y2="30" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="20" y1="30" x2="20" y2="80" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="80" y1="30" x2="80" y2="80" stroke="#6bb8a1" stroke-width="2"/>
+              </svg>
+
+              <!-- Level 2: Sekretaris & Bendahara -->
+              <div class="org-level level-2" data-aos="fade-up" data-aos-delay="150">
+                <div class="row justify-content-center g-4">
+                  <div class="col-lg-3">
+                    <div class="org-card text-center">
+                      <div class="org-card-header bg-success">
+                        <i class="bi bi-file-text" style="font-size: 2rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h5 class="mb-2">SEKRETARIS</h5>
+                        <p class="mb-0 fw-bold">Fikri Ubaydillah</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="org-card text-center">
+                      <div class="org-card-header bg-warning">
+                        <i class="bi bi-cash-coin" style="font-size: 2rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h5 class="mb-2">BENDAHARA</h5>
+                        <p class="mb-0 fw-bold">Vitri Prahantini</p>
+                        <p class="mb-0 fw-bold">Tri Tusiwartini</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SVG Connector - Level 2 to Level 3 -->
+              <svg class="connector-svg-large" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <line x1="25" y1="0" x2="25" y2="35" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="75" y1="0" x2="75" y2="35" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="8" y1="35" x2="92" y2="35" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="12" y1="35" x2="12" y2="100" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="27" y1="35" x2="27" y2="100" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="42" y1="35" x2="42" y2="100" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="58" y1="35" x2="58" y2="100" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="73" y1="35" x2="73" y2="100" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="85" y1="35" x2="85" y2="100" stroke="#6bb8a1" stroke-width="2"/>
+                <line x1="92" y1="35" x2="92" y2="100" stroke="#6bb8a1" stroke-width="2"/>
+              </svg>
+
+              <!-- Level 3: Bidang-Bidang -->
+              <div class="org-level level-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="row g-2 bidang-row">
+                  <div class="bidang-col">
+                    <div class="org-card">
+                      <div class="org-card-header bg-info">
+                        <i class="bi bi-people" style="font-size: 1.4rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h6 class="mb-2">Bidang Humas</h6>
+                        <p class="mb-1 small">Subiyanto</p>
+                        <p class="mb-0 small">yuliantrini</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bidang-col">
+                    <div class="org-card">
+                      <div class="org-card-header bg-info">
+                        <i class="bi bi-building" style="font-size: 1.4rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h6 class="mb-2">Bidang Keagamaan</h6>
+                        <p class="mb-1 small">Matsani</p>
+                        <p class="mb-0 small">Nachrowi</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bidang-col">
+                    <div class="org-card">
+                      <div class="org-card-header bg-danger">
+                        <i class="bi bi-shield-exclamation" style="font-size: 1.4rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h6 class="mb-2">Bidang Pemuda & Olahraga</h6>
+                        <p class="mb-1 small">Joni Akta</p>
+                        <p class="mb-0 small">Dwi Wanti</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bidang-col">
+                    <div class="org-card">
+                      <div class="org-card-header bg-secondary">
+                        <i class="bi bi-book" style="font-size: 1.4rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h6 class="mb-2">Bidang Pendidikan IT dan UKM</h6>
+                        <p class="mb-1 small">Jani Sabtriady</p>
+                        <p class="mb-0 small">yuyun Suhaedah</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bidang-col">
+                    <div class="org-card">
+                      <div class="org-card-header bg-success">
+                        <i class="bi bi-tree" style="font-size: 1.4rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h6 class="mb-2">Bidang PLKH</h6>
+                          <p class="mb-1 small">Kuswa</p>
+                        <p class="mb-0 small">Khoiri</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bidang-col">
+                    <div class="org-card">
+                      <div class="org-card-header bg-info">
+                        <i class="bi bi-heart" style="font-size: 1.4rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h6 class="mb-2">Bidang PKK & Posyandu</h6>
+                        <p class="mb-1 small">Susi H</p>
+                        <p class="mb-0 small">Hamidah</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bidang-col">
+                    <div class="org-card">
+                      <div class="org-card-header bg-primary">
+                        <i class="bi bi-shield-check" style="font-size: 1.4rem; color: white;"></i>
+                      </div>
+                      <div class="org-card-body">
+                        <h6 class="mb-2">Bidang Keamanan</h6>
+                         <p class="mb-1 small">M. Fajrin</p>
+                        <p class="mb-0 small">Hasan Bakar</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

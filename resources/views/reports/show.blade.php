@@ -220,11 +220,6 @@
                             </div>
                         </div>
                     </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
                     @elseif($report->evidence_image)
                     <div class="mb-3">
                         <strong>Foto Bukti</strong>

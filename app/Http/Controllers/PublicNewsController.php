@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\Resident;
 
 class PublicNewsController extends Controller
 {
@@ -16,7 +17,12 @@ class PublicNewsController extends Controller
             ->limit(6)
             ->get();
 
-        return view('index', compact('latestNews'));
+        // Fetch resident statistics
+        $totalResidents = Resident::count();
+        $maleResidents = Resident::where('gender', 'Laki-laki')->count();
+        $femaleResidents = Resident::where('gender', 'Perempuan')->count();
+
+        return view('index', compact('latestNews', 'totalResidents', 'maleResidents', 'femaleResidents'));
     }
 
     /**
