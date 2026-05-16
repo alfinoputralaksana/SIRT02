@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $news->title }} - Sistem Informasi Administrasi RT</title>
     <meta name="description" content="{{ Str::limit($news->content, 160) }}">
     <meta name="keywords" content="berita, RT, administrasi">
@@ -369,9 +370,9 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <!-- Chatbot Modal -->
-    @auth
+    @if(auth()->check() || session('head_of_family_id'))
         @include('partials.chatbot-modal')
-    @endauth
+    @endif
 
     <script>
         AOS.init();

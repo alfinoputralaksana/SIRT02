@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Sistem Informasi Administrasi RT</title>
   <meta name="description" content="Sistem Informasi Administrasi RT - Pengelolaan administrasi Rukun Tetangga dengan Chatbot AI">
   <meta name="keywords" content="RT, administrasi, chatbot">
@@ -43,8 +44,10 @@
             <h2>Sistem Informasi<br><span style="color: #6bb8a1;">Administrasi RT</span></h2>
             <p class="lead">Solusi digital modern untuk pengelolaan administrasi Rukun Tetangga yang lebih efisien dan terpercaya dengan teknologi terkini</p>
             <div class="cta-buttons" data-aos="fade-up" data-aos-delay="300">
-              @auth
-                @if(auth()->user()->role === 'admin')
+              @if(auth()->check() || session('head_of_family_id'))
+                @if(session('head_of_family_id'))
+                  <a href="{{ route('user.dashboard') }}" class="btn btn-primary">Dashboard</a>
+                @elseif(auth()->user()->role === 'admin')
                   <a href="{{ route('admin.dashboard') }}" class="btn btn-primary">Dashboard Admin</a>
                 @else
                   <a href="{{ route('dashboard') }}" class="btn btn-primary">Dashboard</a>
@@ -52,8 +55,7 @@
                 <a href="{{ route('chatbot.index') }}" class="btn btn-outline">Konsultasi dengan Bot</a>
               @else
                 <a href="{{ route('login') }}" class="btn btn-primary">Login Sekarang</a>
-
-              @endauth
+              @endif
             </div>
           </div>
           <div class="col-lg-6">
@@ -626,9 +628,9 @@
   <script src="assets/js/main.js"></script>
 
   <!-- Chatbot Modal -->
-  @auth
+  @if(auth()->check() || session('head_of_family_id'))
     @include('partials.chatbot-modal')
-  @endauth
+  @endif
 
 </body>
 

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsUser
@@ -16,7 +17,12 @@ class EnsureUserIsUser
     public function handle(Request $request, Closure $next): Response
     {
         // Allow regular user access
-        if (auth()->check() && auth()->user()->role === 'user') {
+        if (Auth::check() && Auth::user()->role === 'user') {
+            return $next($request);
+        }
+
+        // Allow admin access to chatbot
+        if (Auth::check() && Auth::user()->role === 'admin') {
             return $next($request);
         }
 

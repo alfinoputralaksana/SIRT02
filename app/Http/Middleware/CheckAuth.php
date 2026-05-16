@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+    use Illuminate\Support\Facades\Auth;
 
 class CheckAuth
 {
@@ -14,7 +15,7 @@ class CheckAuth
     public function handle(Request $request, Closure $next): Response
     {
         // Check if user is authenticated OR HeadOfFamily is logged in via session
-        if (auth()->check() || session('head_of_family_id')) {
+        if (Auth::check() || session('head_of_family_id')) {
             return $next($request);
         }
 

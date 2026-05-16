@@ -452,9 +452,9 @@
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <!-- Chatbot Modal -->
-    @auth
+    @if(auth()->check() || session('head_of_family_id'))
         @include('partials.chatbot-modal')
-    @endauth
+    @endif
 
     <script>
         AOS.init();
