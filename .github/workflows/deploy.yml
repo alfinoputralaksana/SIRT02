@@ -1,44 +1,65 @@
-name: Deploy Laravel to cPanel
+name: Deploy Laravel
 
 on:
   push:
     branches:
-      - main # Jalankan otomatisasi hanya saat push ke branch main
+      - main
+  workflow_dispatch:
+    inputs:
+      fail_on_missing_secrets:
+        description: 'Set to true to make workflow fail if no deploy secrets are present'
+        required: false
+        default: 'false'
 
 jobs:
   web-deploy:
     name: Deploy Core & Public
     runs-on: ubuntu-latest
-    
+    env:
+      # Optional control: set repository secret FAIL_ON_MISSING_SECRETS=true to force explicit failure
+      FAIL_ON_MISSING_SECRETS: ${{ secrets.FAIL_ON_MISSING_SECRETS }}
+
     steps:
     - name: Get latest code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2' # Sesuaikan dengan versi PHP di Rumahweb kamu
+        php-version: '8.2'
 
     - name: Install Dependencies
       run: composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
 
-    # Langkah ini untuk upload file core Laravel ke folder 'laravel-core'
-    - name: Sync Core to cPanel
+    - name: Check available deploy methods
+      id: check_methods
+      run: |
+        echo "FTP_SERVER=${{ secrets.FTP_SERVER }}" >> $GITHUB_OUTPUT || true
+        echo "FTP_USERNAME=${{ secrets.FTP_USERNAME }}" >> $GITHUB_OUTPUT || true
+        echo "FTP_PASSWORD=${{ secrets.FTP_PASSWORD }}" >> $GITHUB_OUTPUT || true
+        echo "SFTP_HOST=${{ secrets.SFTP_HOST }}" >> $GITHUB_OUTPUT || true
+        echo "SFTP_USERNAME=${{ secrets.SFTP_USERNAME }}" >> $GITHUB_OUTPUT || true
+        echo "SFTP_PORT=${{ secrets.SFTP_PORT }}" >> $GITHUB_OUTPUT || true
+        echo "SFTP_PRIVATE_KEY_SET=${{ secrets.SFTP_PRIVATE_KEY != '' }}" >> $GITHUB_OUTPUT || true
+
+    # FTP deploy (if FTP secrets are configured)
+    - name: Sync Core to cPanel (FTP)
+      if: ${{ secrets.FTP_SERVER != '' && secrets.FTP_USERNAME != '' && secrets.FTP_PASSWORD != '' }}
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./
-        server-dir: ./laravel-core/ # Sesuaikan nama foldernya
+        server-dir: ./laravel-core/
         exclude: |
           */.git
           */.git/**
           */node_modules/*
-          */public/* # Kita kecualikan folder public dulu
+          */public/*
 
-    # Langkah ini untuk upload isi folder public ke 'public_html'
-    - name: Sync Public to public_html
+    - name: Sync Public to public_html (FTP)
+      if: ${{ secrets.FTP_SERVER != '' && secrets.FTP_USERNAME != '' && secrets.FTP_PASSWORD != '' }}
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_SERVER }}
@@ -46,3 +67,35 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./public/
         server-dir: ./public_html/
+
+    # SFTP/SSH deploy (if SFTP secrets are configured)
+    - name: Sync via SFTP/SSH (scp)
+      if: ${{ secrets.SFTP_HOST != '' && secrets.SFTP_USERNAME != '' && secrets.SFTP_PRIVATE_KEY != '' }}
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SFTP_HOST }}
+        username: ${{ secrets.SFTP_USERNAME }}
+        key: ${{ secrets.SFTP_PRIVATE_KEY }}
+        port: ${{ secrets.SFTP_PORT || '22' }}
+        source: "./public/*"
+        target: ${{ secrets.SFTP_TARGET_DIR || '/home/username/public_html/' }}
+
+    # Upload artifact as fallback (if neither FTP nor SFTP were present)
+    - name: Upload artifact for manual deploy
+      if: ${{ secrets.FTP_SERVER == '' && (secrets.SFTP_HOST == '' || secrets.SFTP_PRIVATE_KEY == '') }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: laravel-artifact
+        path: |
+          .
+
+    # Explicit fail behavior if configured (either via workflow_dispatch input or repository secret)
+    - name: Fail when no deploy secrets and explicit-fail enabled
+      if: ${{ secrets.FTP_SERVER == '' && (secrets.SFTP_HOST == '' || secrets.SFTP_PRIVATE_KEY == '') && (env.FAIL_ON_MISSING_SECRETS == 'true' || github.event.inputs.fail_on_missing_secrets == 'true') }}
+      run: |
+        echo "No deploy secrets configured (FTP or SFTP). Failing because explicit-fail is enabled." >&2
+        exit 1
+
+    - name: Done
+      run: |
+        echo "Deployment workflow completed. If no deploy method ran, an artifact was generated for manual deployment."
