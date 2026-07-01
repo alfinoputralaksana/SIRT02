@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\GeminiConfig;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class GeminiChatbotService
 {
@@ -41,34 +43,61 @@ class GeminiChatbotService
      */
     public function getResponse(string $userMessage, array $conversationHistory = []): array
     {
+        // Retry policy for transient server errors (503)
+        $maxRetries = 3;
+        $initialDelayMs = 500;
+
         try {
             // Siapkan messages untuk API
             $messages = $this->formatMessages($userMessage, $conversationHistory);
 
             // Call Gemini API menggunakan Guzzle client
             $client = new Client();
-            
-            $response = $client->post($this->apiUrl . '/models/' . $this->model . ':generateContent?key=' . $this->apiKey, [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => [
-                    'contents' => $messages,
-                    'generationConfig' => [
-                        'temperature' => $this->temperature,
-                        'topK' => 40,
-                        'topP' => 0.95,
-                        'maxOutputTokens' => $this->maxOutputTokens,
-                    ],
-                    'safetySettings' => [
-                        [
-                            'category' => 'HARM_CATEGORY_HARASSMENT',
-                            'threshold' => 'BLOCK_MEDIUM_AND_ABOVE',
+            $url = $this->apiUrl . '/models/' . $this->model . ':generateContent?key=' . $this->apiKey;
+
+            $attempt = 0;
+            $response = null;
+            while ($attempt <= $maxRetries) {
+                try {
+                    $response = $client->post($url, [
+                        'headers' => [
+                            'Content-Type' => 'application/json',
                         ],
-                    ],
-                ],
-                'timeout' => 30,
-            ]);
+                        'json' => [
+                            'contents' => $messages,
+                            'generationConfig' => [
+                                'temperature' => $this->temperature,
+                                'topK' => 40,
+                                'topP' => 0.95,
+                                'maxOutputTokens' => $this->maxOutputTokens,
+                            ],
+                            'safetySettings' => [
+                                [
+                                    'category' => 'HARM_CATEGORY_HARASSMENT',
+                                    'threshold' => 'BLOCK_MEDIUM_AND_ABOVE',
+                                ],
+                            ],
+                        ],
+                        'timeout' => 30,
+                    ]);
+
+                    // if we reach here, request succeeded
+                    break;
+                } catch (RequestException $re) {
+                    $attempt++;
+                    $status = $re->getResponse() ? $re->getResponse()->getStatusCode() : null;
+                    // Retry only on 5xx server errors (transient)
+                    if ($status === 503 && $attempt <= $maxRetries) {
+                        // exponential backoff with jitter
+                        $delay = $initialDelayMs * (2 ** ($attempt - 1));
+                        $jitter = rand(0, 200);
+                        usleep(($delay + $jitter) * 1000);
+                        continue;
+                    }
+                    // rethrow to be handled below
+                    throw $re;
+                }
+            }
 
             $statusCode = $response->getStatusCode();
             if ($statusCode !== 200) {
@@ -77,22 +106,71 @@ class GeminiChatbotService
 
             $data = json_decode($response->getBody(), true);
 
-            if (!isset($data['candidates'][0]['content']['parts'][0]['text'])) {
+            // Assemble text from possible response shapes: candidates -> content -> parts
+            $collected = [];
+
+            if (isset($data['candidates']) && is_array($data['candidates'])) {
+                foreach ($data['candidates'] as $cand) {
+                    if (isset($cand['content']['parts']) && is_array($cand['content']['parts'])) {
+                        foreach ($cand['content']['parts'] as $part) {
+                            if (isset($part['text'])) {
+                                $collected[] = $part['text'];
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Fallback shapes (older/newer responses)
+            if (empty($collected) && isset($data['output']) && is_array($data['output'])) {
+                foreach ($data['output'] as $out) {
+                    if (isset($out['content']) && is_array($out['content'])) {
+                        foreach ($out['content'] as $c) {
+                            if (isset($c['text'])) $collected[] = $c['text'];
+                        }
+                    }
+                }
+            }
+
+            if (empty($collected)) {
                 throw new Exception('Invalid API response format');
             }
 
+            $fullText = implode("\n\n", $collected);
+
             return [
                 'success' => true,
-                'message' => $data['candidates'][0]['content']['parts'][0]['text'],
-                'usage' => $data['usageMetadata'] ?? null,
+                'message' => $fullText,
+                'usage' => $data['usageMetadata'] ?? $data['usage'] ?? null,
             ];
         } catch (Exception $e) {
+            // Redact API key from messages returned to client and logs
+            $safeMsg = $this->redactSensitiveInfo($e->getMessage());
+
+            try {
+                Log::error('GeminiChatbotService error: ' . $safeMsg, ['exception' => $e]);
+            } catch (\Throwable $logEx) {
+                // ignore logging errors
+            }
+
             return [
                 'success' => false,
-                'message' => 'Maaf, terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.',
-                'error' => $e->getMessage(),
+                'message' => 'Maaf, layanan pemrosesan sedang sibuk atau mengalami gangguan. Silakan coba beberapa saat lagi.',
+                'error' => $safeMsg,
             ];
         }
+    }
+
+    /**
+     * Redact API keys or sensitive query params from text
+     */
+    private function redactSensitiveInfo(string $text): string
+    {
+        // Redact &key=<value> or ?key=<value>
+        $text = preg_replace('/([?&]key=)[^&\s]+/i', '$1[REDACTED]', $text);
+        // Redact common API key patterns
+        $text = preg_replace('/AIza[0-9A-Za-z_\-]{35}/', '[REDACTED_KEY]', $text);
+        return $text;
     }
 
     /**

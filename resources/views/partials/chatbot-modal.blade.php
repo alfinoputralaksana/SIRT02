@@ -46,6 +46,12 @@
 
     <!-- Input -->
     <div class="chatbot-input-area">
+        <div class="chatbot-templates" id="chatbot-templates" aria-hidden="false">
+            <button class="chatbot-template-btn" data-q="Bagaimana cara mengajukan surat pengantar KTP?">Pengantar KTP</button>
+            <button class="chatbot-template-btn" data-q="Apa persyaratan untuk membuat surat keterangan domisili?">Persyaratan Domisili</button>
+            <button class="chatbot-template-btn" data-q="Bagaimana cara mereset password akun?">Reset Password</button>
+            <button class="chatbot-template-btn" data-q="Bagaimana cara melaporkan lampu jalan yang rusak?">Laporkan Lampu</button>
+        </div>
         <div class="chatbot-input-group">
             <input 
                 type="text" 
@@ -331,6 +337,31 @@
         border-radius: 0 0 12px 12px;
     }
 
+    .chatbot-templates {
+        display: flex;
+        gap: 8px;
+        padding: 8px 12px;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 4px solid transparent;
+        overflow-x: auto;
+    }
+
+    .chatbot-template-btn {
+        background: #f5f5f5;
+        border: 1px solid #e1e1e1;
+        padding: 6px 10px;
+        border-radius: 18px;
+        font-size: 12px;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .chatbot-template-btn:hover {
+        background: #b8d4c8;
+        color: white;
+        border-color: #b8d4c8;
+    }
+
     .chatbot-input-group {
         display: flex;
         gap: 8px;
@@ -509,9 +540,22 @@
 
             const messageEl = document.createElement('div');
             messageEl.className = `chatbot-message ${role}`;
-            messageEl.innerHTML = `<div class="chatbot-message-content">${escapeHtml(content)}</div>`;
+            messageEl.innerHTML = `<div class="chatbot-message-content">${formatChatMessage(content)}</div>`;
             chatMessages.appendChild(messageEl);
             scrollToBottom();
+        }
+
+        // Format chat message: escape HTML, convert **bold** to <strong>, preserve paragraphs and line breaks
+        function formatChatMessage(text) {
+            if (text === null || text === undefined) return '';
+            const escaped = escapeHtml(String(text));
+
+            // Convert markdown bold **text** to <strong>
+            const withBold = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Break into paragraphs on double newline, single newline -> <br>
+            const paragraphs = withBold.split(/\n{2,}/).map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>');
+            return paragraphs.join('');
         }
 
         // Show typing indicator
@@ -600,6 +644,21 @@
             .catch(error => console.error('Error clearing conversation:', error));
         });
 
+        // Attach template button listeners (above input)
+        function attachTemplateListeners() {
+            document.querySelectorAll('.chatbot-template-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    messageInput.value = btn.dataset.q || btn.textContent.trim();
+                    messageInput.focus();
+                    // Auto-send when template clicked to simplify flow
+                    // small delay to allow focus/UX updates
+                    setTimeout(() => {
+                        sendMessage();
+                    }, 150);
+                });
+            });
+        }
+
         // Suggested questions
         function attachSuggestedButtonListeners() {
             document.querySelectorAll('.chatbot-suggested-btn').forEach(btn => {
@@ -633,5 +692,6 @@
 
         // Initial setup
         attachSuggestedButtonListeners();
+        attachTemplateListeners();
     });
 </script>
