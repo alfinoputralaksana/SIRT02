@@ -27,6 +27,16 @@ jobs:
       with:
         php-version: '8.2'
 
+    - name: Report configured deploy secrets
+      run: |
+        echo "FTP_SERVER_SET=${{ secrets.FTP_SERVER != '' }}"
+        echo "FTP_USERNAME_SET=${{ secrets.FTP_USERNAME != '' }}"
+        echo "FTP_PASSWORD_SET=${{ secrets.FTP_PASSWORD != '' }}"
+        echo "SFTP_HOST_SET=${{ secrets.SFTP_HOST != '' }}"
+        echo "SFTP_USERNAME_SET=${{ secrets.SFTP_USERNAME != '' }}"
+        echo "SFTP_PRIVATE_KEY_SET=${{ secrets.SFTP_PRIVATE_KEY != '' }}"
+        echo "FAIL_ON_MISSING_SECRETS=${{ env.FAIL_ON_MISSING_SECRETS }}"
+
     - name: Install Composer Dependencies
       run: composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
 
