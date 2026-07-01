@@ -19,6 +19,7 @@ jobs:
       FTP_SERVER: ftp.sirt02.my.id
       FTP_USERNAME: sirt02@sirt02.my.id
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+      FTP_PROTOCOL: ${{ secrets.FTP_PROTOCOL }}
       FAIL_ON_MISSING_SECRETS: ${{ secrets.FAIL_ON_MISSING_SECRETS }}
 
     steps:
@@ -39,6 +40,11 @@ jobs:
           else
             echo "FTP_PASSWORD_SET=false"
           fi
+          if [ -n "$FTP_PROTOCOL" ]; then
+            echo "FTP_PROTOCOL=$FTP_PROTOCOL"
+          else
+            echo "FTP_PROTOCOL=ftp"
+          fi
           echo "FAIL_ON_MISSING_SECRETS=$FAIL_ON_MISSING_SECRETS"
 
       - name: Install Composer Dependencies
@@ -52,6 +58,7 @@ jobs:
           server: ${{ env.FTP_SERVER }}
           username: ${{ env.FTP_USERNAME }}
           password: ${{ env.FTP_PASSWORD }}
+          protocol: ${{ env.FTP_PROTOCOL != '' && env.FTP_PROTOCOL || 'ftp' }}
           port: 21
           local-dir: ./
           server-dir: laravel-core/
@@ -68,6 +75,7 @@ jobs:
           server: ${{ env.FTP_SERVER }}
           username: ${{ env.FTP_USERNAME }}
           password: ${{ env.FTP_PASSWORD }}
+          protocol: ${{ env.FTP_PROTOCOL != '' && env.FTP_PROTOCOL || 'ftp' }}
           port: 21
           local-dir: ./public/
           server-dir: public_html/
