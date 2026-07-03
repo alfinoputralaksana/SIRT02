@@ -59,57 +59,54 @@ jobs:
         run: |
           composer install             --no-ansi             --no-dev             --no-interaction             --no-plugins             --no-progress             --no-scripts             --optimize-autoloader
 
-      - name: Deploy via FTP/FTPS
-        if: ${{ env.DEPLOY_METHOD != 'sftp' && env.FTP_PASSWORD != '' }}
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ env.FTP_SERVER }}
-          username: ${{ env.FTP_USERNAME }}
-          password: ${{ env.FTP_PASSWORD }}
-          protocol: ${{ env.DEPLOY_METHOD }}
-          port: 21
-          local-dir: ./
-          server-dir: laravel-core/
-          exclude: |
-            **/.git*
-            **/node_modules/**
-            **/vendor/**
-            **/public/**
+      - name: Create Deployment Artifact
+        run: |
+          mkdir -p deploy-dist
+          zip -r deploy-dist/release.zip . -x "*.git*" -x "node_modules/*" -x "tests/*" -x "deploy-dist/*"
+          
+          cat << 'SCRIPT' > deploy-dist/deploy_script.php
+          <?php
+          echo "Extracting release.zip...\n";
+          $zip = new ZipArchive;
+          if ($zip->open('release.zip') === TRUE) {
+              $zip->extractTo(__DIR__);
+              $zip->close();
+              echo "Unzipped successfully.\n";
+          } else {
+              echo "Unzip failed.\n";
+              exit(1);
+          }
+          
+          echo "Bootstrapping Laravel for migrations...\n";
+          require __DIR__.'/vendor/autoload.php';
+          $app = require_once __DIR__.'/bootstrap/app.php';
+          $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+          
+          echo "Running Migrations...\n";
+          $status = $kernel->call('migrate', ['--force' => true]);
+          echo "Migration output:\n" . $kernel->output() . "\n";
+          
+          echo "Clearing Cache...\n";
+          $kernel->call('optimize:clear');
+          echo $kernel->output() . "\n";
+          
+          unlink('release.zip');
+          unlink(__FILE__);
+          echo "Deployment finished!\n";
+          SCRIPT
 
-      - name: Deploy public folder via FTP/FTPS
-        if: ${{ env.DEPLOY_METHOD != 'sftp' && env.FTP_PASSWORD != '' }}
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ env.FTP_SERVER }}
-          username: ${{ env.FTP_USERNAME }}
-          password: ${{ env.FTP_PASSWORD }}
-          protocol: ${{ env.DEPLOY_METHOD }}
-          port: 21
-          local-dir: ./public/
-          server-dir: public_html/
-
-      - name: Deploy via SFTP
-        if: ${{ env.DEPLOY_METHOD == 'sftp' && (env.SFTP_PASSWORD != '' || env.SFTP_PRIVATE_KEY != '') }}
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ env.FTP_SERVER }}
-          username: ${{ env.FTP_USERNAME }}
-          password: ${{ env.SFTP_PASSWORD }}
-          key: ${{ env.SFTP_PRIVATE_KEY }}
-          port: 22
-          source: "./public/"
-          target: "public_html/"
+      - name: Upload Zip and Script via cURL
+        run: |
+          if [ "$DEPLOY_METHOD" = 'ftps' ]; then
+            curl --ftp-ssl --insecure -T deploy-dist/release.zip ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
+            curl --ftp-ssl --insecure -T deploy-dist/deploy_script.php ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
+          else
+            curl -T deploy-dist/release.zip ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
+            curl -T deploy-dist/deploy_script.php ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
+          fi
 
       - name: Deployment Summary
         run: |
-          if [ "$DEPLOY_METHOD" = 'sftp' ]; then
-            echo "✓ Attempted SFTP deployment"
-          elif [ -n "$FTP_PASSWORD" ]; then
-            echo "✓ Attempted FTP/FTPS deployment"
-          else
-            echo "⚠ No deploy password configured. Skipping deploy."
-            if [ "$FAIL_ON_MISSING_SECRETS" = "true" ] || [ "${{ github.event.inputs.fail_on_missing_secrets }}" = "true" ]; then
-              echo "❌ Explicit fail enabled. Exiting with failure." >&2
-              exit 1
-            fi
-          fi
+          echo "✓ Files uploaded via FTP."
+          echo "Action Required: You must trigger the deployment script by visiting the URL where deploy_script.php was uploaded."
+          echo "For example: curl https://sirt02.my.id/sirt02/deploy_script.php"
