@@ -95,15 +95,16 @@ jobs:
           echo "Deployment finished!\n";
           SCRIPT
 
-      - name: Upload Zip and Script via cURL
-        run: |
-          if [ "$DEPLOY_METHOD" = 'ftps' ]; then
-            curl --ftp-ssl --insecure -T deploy-dist/release.zip ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
-            curl --ftp-ssl --insecure -T deploy-dist/deploy_script.php ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
-          else
-            curl -T deploy-dist/release.zip ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
-            curl -T deploy-dist/deploy_script.php ftp://${{ env.FTP_SERVER }}/ --user "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}"
-          fi
+      - name: Upload Zip and Script via FTP Action
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USERNAME }}
+          password: ${{ env.FTP_PASSWORD }}
+          protocol: ${{ env.DEPLOY_METHOD }}
+          port: 21
+          local-dir: deploy-dist/
+          server-dir: ./
 
       - name: Deployment Summary
         run: |
