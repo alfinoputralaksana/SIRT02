@@ -66,33 +66,64 @@ jobs:
           
           cat << 'SCRIPT' > deploy-dist/deploy_script.php
           <?php
-          echo "Extracting release.zip...\n";
-          $zip = new ZipArchive;
-          if ($zip->open('release.zip') === TRUE) {
-              $zip->extractTo(__DIR__);
-              $zip->close();
-              echo "Unzipped successfully.\n";
+          ini_set('display_errors', 1);
+          ini_set('display_startup_errors', 1);
+          error_reporting(E_ALL);
+          
+          echo "<pre>";
+          echo "1. Extracting release.zip...\n";
+          
+          if (!class_exists('ZipArchive')) {
+              echo "Warning: ZipArchive extension is missing. Trying system unzip...\n";
+              exec('unzip -o release.zip 2>&1', $output, $returnVar);
+              if ($returnVar !== 0) {
+                  die("System unzip failed. Output: " . implode("\n", $output) . "\n");
+              }
+              echo "Unzipped successfully via system unzip.\n";
           } else {
-              echo "Unzip failed.\n";
-              exit(1);
+              $zip = new ZipArchive;
+              if ($zip->open('release.zip') === TRUE) {
+                  $zip->extractTo(__DIR__);
+                  $zip->close();
+                  echo "Unzipped successfully via ZipArchive.\n";
+              } else {
+                  die("Fatal Error: ZipArchive extraction failed.\n");
+              }
           }
           
-          echo "Bootstrapping Laravel for migrations...\n";
+          echo "\n2. Checking extracted files...\n";
+          if (!file_exists(__DIR__.'/vendor/autoload.php')) {
+              die("Fatal Error: vendor/autoload.php not found! The extraction failed or extracted to the wrong path.\n");
+          }
+          
+          echo "Bootstrapping Laravel...\n";
+          
+          // Trik untuk mencegah Fatal Error jika tabel cache/session belum dibuat di database
+          putenv('CACHE_STORE=array');
+          putenv('SESSION_DRIVER=array');
+          $_ENV['CACHE_STORE'] = 'array';
+          $_ENV['SESSION_DRIVER'] = 'array';
+          
           require __DIR__.'/vendor/autoload.php';
           $app = require_once __DIR__.'/bootstrap/app.php';
           $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
           
-          echo "Running Migrations...\n";
-          $status = $kernel->call('migrate', ['--force' => true]);
-          echo "Migration output:\n" . $kernel->output() . "\n";
+          try {
+              echo "\n3. Running Migrations...\n";
+              $kernel->call('migrate', ['--force' => true]);
+              echo "Migration output:\n" . $kernel->output() . "\n";
+              
+              echo "\n4. Clearing Cache...\n";
+              $kernel->call('optimize:clear');
+              echo $kernel->output() . "\n";
+          } catch (\Exception $e) {
+              echo "\nLaravel Command Error: " . $e->getMessage() . "\n";
+          }
           
-          echo "Clearing Cache...\n";
-          $kernel->call('optimize:clear');
-          echo $kernel->output() . "\n";
-          
-          unlink('release.zip');
-          unlink(__FILE__);
-          echo "Deployment finished!\n";
+          echo "\n5. Cleaning up...\n";
+          @unlink('release.zip');
+          @unlink(__FILE__);
+          echo "Deployment finished successfully!\n</pre>";
           SCRIPT
 
       - name: Upload Zip and Script via FTP Action
