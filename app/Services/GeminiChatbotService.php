@@ -111,6 +111,12 @@ class GeminiChatbotService
 
             if (isset($data['candidates']) && is_array($data['candidates'])) {
                 foreach ($data['candidates'] as $cand) {
+                    // Cek apakah respons diblokir oleh safety filter Gemini
+                    $finishReason = $cand['finishReason'] ?? null;
+                    if (in_array($finishReason, ['SAFETY', 'RECITATION', 'OTHER'])) {
+                        throw new Exception('Respons diblokir oleh safety filter Gemini (finishReason: ' . $finishReason . '). Coba ubah pertanyaan Anda.');
+                    }
+
                     if (isset($cand['content']['parts']) && is_array($cand['content']['parts'])) {
                         foreach ($cand['content']['parts'] as $part) {
                             if (isset($part['text'])) {
@@ -133,7 +139,9 @@ class GeminiChatbotService
             }
 
             if (empty($collected)) {
-                throw new Exception('Invalid API response format');
+                // Sertakan pesan error dari API jika ada
+                $apiError = $data['error']['message'] ?? ($data['candidates'][0]['finishReason'] ?? 'Format respons API tidak dikenali');
+                throw new Exception('model output error: ' . $apiError . ', please try again');
             }
 
             $fullText = implode("\n\n", $collected);
