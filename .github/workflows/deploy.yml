@@ -40,6 +40,49 @@ jobs:
           npm install
           npm run build
 
+      - name: Create Automated Artisan Runner Script
+        run: |
+          cat << 'EOF' > public/artisan_runner.php
+          <?php
+          define('LARAVEL_START', microtime(true));
+
+          // Deteksi lokasi autoloader & bootstrap secara fleksibel
+          if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+              require __DIR__.'/../vendor/autoload.php';
+              $app = require_once __DIR__.'/../bootstrap/app.php';
+          } elseif (file_exists(__DIR__.'/../../vendor/autoload.php')) {
+              require __DIR__.'/../../vendor/autoload.php';
+              $app = require_once __DIR__.'/../../bootstrap/app.php';
+          } else {
+              die("Error: vendor/autoload.php not found in parent directories.\n");
+          }
+
+          $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+
+          echo "<pre>=== STARTING AUTOMATED ARTISAN TASKS ===\n\n";
+
+          try {
+              echo "1. Executing: php artisan migrate --force\n";
+              $kernel->call('migrate', ['--force' => true]);
+              echo $kernel->output() . "\n";
+
+              echo "2. Executing: php artisan db:seed --force\n";
+              $kernel->call('db:seed', ['--force' => true]);
+              echo $kernel->output() . "\n";
+
+              echo "3. Executing: php artisan optimize:clear\n";
+              $kernel->call('optimize:clear');
+              echo $kernel->output() . "\n";
+
+              echo "=== ALL ARTISAN TASKS COMPLETED SUCCESSFULLY ===</pre>";
+          } catch (\Exception $e) {
+              echo "Artisan Error: " . $e->getMessage() . "\n";
+          } finally {
+              // Self-delete runner script demi keamanan
+              @unlink(__FILE__);
+          }
+          EOF
+
       - name: Sync Core Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -70,48 +113,10 @@ jobs:
           local-dir: public/
           server-dir: ./public_html/sirt02.my.id/
 
-      - name: Trigger Automated Artisan Tasks (Migrate, Seed, Clear Cache)
+      - name: Trigger Automated Artisan Tasks
         run: |
-          # 1. Buat script runner sementara
-          cat << 'EOF' > artisan_runner.php
-          <?php
-          define('LARAVEL_START', microtime(true));
-
-          // Hubungkan ke autoloader & bootstrap di folder core terluar
-          require __DIR__.'/../../vendor/autoload.php';
-          $app = require_once __DIR__.'/../../bootstrap/app.php';
-          $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-
-          echo "<pre>=== STARTING AUTOMATED ARTISAN TASKS ===\n\n";
-
-          // A. Migrasi Database
-          echo "1. Executing: php artisan migrate --force\n";
-          $kernel->call('migrate', ['--force' => true]);
-          echo $kernel->output() . "\n";
-
-          // B. Seeder Database
-          echo "2. Executing: php artisan db:seed --force\n";
-          $kernel->call('db:seed', ['--force' => true]);
-          echo $kernel->output() . "\n";
-
-          // C. Purge & Clear Cache
-          echo "3. Executing: php artisan optimize:clear\n";
-          $kernel->call('optimize:clear');
-          echo $kernel->output() . "\n";
-
-          echo "=== ALL ARTISAN TASKS COMPLETED SUCCESSFULLY ===</pre>";
-          EOF
-
-          # 2. Upload script runner ke folder public domain
-          curl --ftp-create-dirs -T artisan_runner.php -u "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}" ftp://${{ env.FTP_SERVER }}/public_html/sirt02.my.id/artisan_runner.php
-
-          # 3. Panggil URL agar cPanel mengeksekusi script secara internal
           echo "Executing Artisan commands via remote HTTP trigger..."
           curl -s https://sirt02.my.id/artisan_runner.php
-
-          # 4. Hapus script runner dari server demi keamanan
-          echo "Cleaning up artisan runner script..."
-          curl -u "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}" ftp://${{ env.FTP_SERVER }}/public_html/sirt02.my.id/artisan_runner.php -Q "DELE artisan_runner.php"
 
       - name: Deployment Summary
         run: |
