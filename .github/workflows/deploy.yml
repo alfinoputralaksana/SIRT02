@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Build & Deploy to cPanel (Ultra Fast)
+    name: Build & Deploy to cPanel
     runs-on: ubuntu-latest
     env:
       FTP_SERVER: ftp.sirt02.my.id
@@ -40,73 +40,104 @@ jobs:
           npm install
           npm run build
 
-      - name: Package Application into Release Zip
+      - name: Create Automated Artisan Runner Script
         run: |
-          mkdir -p deploy-dist
-          # Compress all core and public files into a single zip package
-          zip -r deploy-dist/release.zip . -x ".git*" "node_modules/*" "vendor/*" "storage/*" "tests/*" ".env*" "phpunit.xml" "README.md"
-          
-          # Create automated deployment runner
-          cat << 'EOF' > deploy-dist/deploy_runner.php
+          cat << 'EOF' > public/artisan_runner.php
           <?php
-          echo "<pre>=== STARTING ULTRA-FAST DEPLOYMENT ===\n";
-          
-          // 1. Unzip release.zip
-          if (file_exists(__DIR__.'/release.zip')) {
-              echo "1. Extracting release.zip package...\n";
-              $zip = new ZipArchive;
-              if ($zip->open(__DIR__.'/release.zip') === TRUE) {
-                  // Extract core files to /home/sirp7472/
-                  $zip->extractTo('/home/sirp7472/');
-                  $zip->close();
-                  echo "   Extract Core Files OK!\n";
+          define('LARAVEL_START', microtime(true));
 
-                  // Sync public files to public_html/sirt02.my.id
-                  if (is_dir('/home/sirp7472/public')) {
-                      @mkdir('/home/sirp7472/public_html/sirt02.my.id', 0755, true);
-                      exec('cp -rf /home/sirp7472/public/* /home/sirp7472/public_html/sirt02.my.id/');
-                      echo "   Sync Public Assets OK!\n";
-                  }
-              } else {
-                  echo "   Zip extract failed!\n";
-              }
+          // Deteksi lokasi autoloader & bootstrap
+          if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+              require __DIR__.'/../vendor/autoload.php';
+              $app = require_once __DIR__.'/../bootstrap/app.php';
+          } elseif (file_exists(__DIR__.'/../../vendor/autoload.php')) {
+              require __DIR__.'/../../vendor/autoload.php';
+              $app = require_once __DIR__.'/../../bootstrap/app.php';
+          } else {
+              die("Error: vendor/autoload.php not found.\n");
           }
-          
-          // 2. Run Artisan commands
-          if (file_exists('/home/sirp7472/vendor/autoload.php')) {
-              require '/home/sirp7472/vendor/autoload.php';
-              $app = require_once '/home/sirp7472/bootstrap/app.php';
-              $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-              
-              echo "\n2. Executing Artisan Commands...\n";
+
+          $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+
+          echo "<pre>=== STARTING AUTOMATED ARTISAN TASKS ===\n\n";
+
+          try {
+              echo "1. Executing: php artisan migrate --force\n";
               $kernel->call('migrate', ['--force' => true]);
-              echo "   Migrate: " . trim($kernel->output()) . "\n";
-              
+              echo $kernel->output() . "\n";
+
+              echo "2. Executing: php artisan db:seed --force\n";
               $kernel->call('db:seed', ['--force' => true]);
-              echo "   Seed: " . trim($kernel->output()) . "\n";
-              
+              echo $kernel->output() . "\n";
+
+              echo "3. Executing: php artisan optimize:clear\n";
               $kernel->call('optimize:clear');
-              echo "   Optimize Clear: " . trim($kernel->output()) . "\n";
+              echo $kernel->output() . "\n";
+
+              echo "=== ALL ARTISAN TASKS COMPLETED SUCCESSFULLY ===</pre>";
+          } catch (\Exception $e) {
+              echo "Artisan Error: " . $e->getMessage() . "\n";
+          } finally {
+              @unlink(__FILE__);
           }
-          
-          echo "\n3. Cleaning up deployment files...\n";
-          @unlink(__DIR__.'/release.zip');
-          @unlink(__FILE__);
-          echo "=== DEPLOYMENT COMPLETED SUCCESSFULLY ===</pre>";
           EOF
 
-      - name: Upload Package & Runner via cURL FTP (Single Transfer)
-        run: |
-          echo "Uploading release package..."
-          curl --ftp-create-dirs -T deploy-dist/release.zip -u "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}" ftp://${{ env.FTP_SERVER }}/public_html/sirt02.my.id/release.zip
-          echo "Uploading deployment runner..."
-          curl --ftp-create-dirs -T deploy-dist/deploy_runner.php -u "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}" ftp://${{ env.FTP_SERVER }}/public_html/sirt02.my.id/deploy_runner.php
+      - name: Sync Core Files via Direct FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USERNAME }}
+          password: ${{ env.FTP_PASSWORD }}
+          protocol: ${{ env.DEPLOY_METHOD }}
+          port: 21
+          server-dir: ./
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/vendor/**
+            **/storage/**
+            **/bootstrap/cache/**
+            **/tests/**
+            public/**
+            .env
+            phpunit.xml
+            README.md
+            .cagefs/**
+            .caldav/**
+            .cl.selector/**
+            .clwpos/**
+            .cpanel/**
+            .htpasswds/**
+            .koality/**
+            .softaculous/**
+            .spamassassin/**
+            .subaccounts/**
+            .trash/**
+            etc/**
+            logs/**
+            mail/**
+            public_ftp/**
+            public_html/**
+            ssl/**
 
-      - name: Trigger Remote Unpack & Auto-Clean
+      - name: Sync Public Assets via Direct FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USERNAME }}
+          password: ${{ env.FTP_PASSWORD }}
+          protocol: ${{ env.DEPLOY_METHOD }}
+          port: 21
+          local-dir: public/
+          server-dir: ./public_html/sirt02.my.id/
+
+      - name: Trigger Automated Artisan Tasks
         run: |
-          echo "Executing remote extraction & Artisan tasks..."
-          curl -s https://sirt02.my.id/deploy_runner.php
+          echo "Executing Artisan commands via remote HTTP trigger..."
+          curl -s https://sirt02.my.id/artisan_runner.php
 
       - name: Deployment Summary
         run: |
-          echo "✓ Ultra-fast zip deployment completed in seconds!"
+          echo "✓ Direct FTP deployment completed successfully."
