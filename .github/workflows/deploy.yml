@@ -97,6 +97,8 @@ jobs:
             **/.git*/**
             **/node_modules/**
             **/vendor/**
+            **/storage/**
+            **/bootstrap/cache/**
             **/tests/**
             public/**
             .env
