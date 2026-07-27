@@ -96,6 +96,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/vendor/**
             **/tests/**
             public/**
             .env
