@@ -82,7 +82,7 @@ jobs:
           }
           EOF
 
-      - name: Sync Core Files via Direct FTP
+      - name: Sync Application Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ env.FTP_SERVER }}
@@ -100,7 +100,6 @@ jobs:
             **/storage/**
             **/bootstrap/cache/**
             **/tests/**
-            public/**
             .env
             phpunit.xml
             README.md
@@ -122,17 +121,6 @@ jobs:
             public_html/**
             ssl/**
 
-      - name: Sync Public Assets via Direct FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ env.FTP_SERVER }}
-          username: ${{ env.FTP_USERNAME }}
-          password: ${{ env.FTP_PASSWORD }}
-          protocol: ${{ env.DEPLOY_METHOD }}
-          port: 21
-          local-dir: public/
-          server-dir: ./public_html/sirt02.my.id/
-
       - name: Trigger Automated Artisan Tasks
         run: |
           echo "Executing Artisan commands via remote HTTP trigger..."
@@ -140,4 +128,4 @@ jobs:
 
       - name: Deployment Summary
         run: |
-          echo "✓ Direct FTP deployment completed successfully."
+          echo "✓ Single-step FTP deployment completed successfully."
