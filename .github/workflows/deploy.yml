@@ -104,6 +104,23 @@ jobs:
             .env
             phpunit.xml
             README.md
+            .cagefs/**
+            .caldav/**
+            .cl.selector/**
+            .clwpos/**
+            .cpanel/**
+            .htpasswds/**
+            .koality/**
+            .softaculous/**
+            .spamassassin/**
+            .subaccounts/**
+            .trash/**
+            etc/**
+            logs/**
+            mail/**
+            public_ftp/**
+            public_html/**
+            ssl/**
 
       - name: Sync Public Assets via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
