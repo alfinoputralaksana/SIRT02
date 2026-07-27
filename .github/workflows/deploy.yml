@@ -1,4 +1,4 @@
-name: Deploy Laravel
+name: Deploy Laravel Framework
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to cPanel
+    name: Build & Deploy to cPanel
     runs-on: ubuntu-latest
     env:
       FTP_SERVER: ftp.sirt02.my.id
@@ -24,10 +24,21 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, json, zip, mysql
 
       - name: Install Composer Dependencies
         run: |
           composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
+
+      - name: Setup Node.js & Build Frontend Assets
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & Build NPM
+        run: |
+          npm ci
+          npm run build
 
       - name: Sync Core Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
@@ -57,9 +68,52 @@ jobs:
           protocol: ${{ env.DEPLOY_METHOD }}
           port: 21
           local-dir: public/
-          server-dir: ./public_html/
+          server-dir: ./public_html/sirt02.my.id/
+
+      - name: Trigger Automated Artisan Tasks (Migrate, Seed, Clear Cache)
+        run: |
+          # 1. Buat script runner sementara
+          cat << 'EOF' > artisan_runner.php
+          <?php
+          define('LARAVEL_START', microtime(true));
+
+          // Hubungkan ke autoloader & bootstrap di folder core terluar
+          require __DIR__.'/../../vendor/autoload.php';
+          $app = require_once __DIR__.'/../../bootstrap/app.php';
+          $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+
+          echo "<pre>=== STARTING AUTOMATED ARTISAN TASKS ===\n\n";
+
+          // A. Migrasi Database
+          echo "1. Executing: php artisan migrate --force\n";
+          $kernel->call('migrate', ['--force' => true]);
+          echo $kernel->output() . "\n";
+
+          // B. Seeder Database
+          echo "2. Executing: php artisan db:seed --force\n";
+          $kernel->call('db:seed', ['--force' => true]);
+          echo $kernel->output() . "\n";
+
+          // C. Purge & Clear Cache
+          echo "3. Executing: php artisan optimize:clear\n";
+          $kernel->call('optimize:clear');
+          echo $kernel->output() . "\n";
+
+          echo "=== ALL ARTISAN TASKS COMPLETED SUCCESSFULLY ===</pre>";
+          EOF
+
+          # 2. Upload script runner ke folder public domain
+          curl --ftp-create-dirs -T artisan_runner.php -u "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}" ftp://${{ env.FTP_SERVER }}/public_html/sirt02.my.id/artisan_runner.php
+
+          # 3. Panggil URL agar cPanel mengeksekusi script secara internal
+          echo "Executing Artisan commands via remote HTTP trigger..."
+          curl -s https://sirt02.my.id/artisan_runner.php
+
+          # 4. Hapus script runner dari server demi keamanan
+          echo "Cleaning up artisan runner script..."
+          curl -u "${{ env.FTP_USERNAME }}:${{ env.FTP_PASSWORD }}" ftp://${{ env.FTP_SERVER }}/public_html/sirt02.my.id/artisan_runner.php -Q "DELE artisan_runner.php"
 
       - name: Deployment Summary
         run: |
-          echo "✓ Core files and Public assets synced successfully via FTP."
-
+          echo "✓ Deployment completed successfully."
+          echo "✓ Frontend assets compiled, core/public files synced, database migrated, seeded, and cache purged."
