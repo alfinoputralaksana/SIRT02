@@ -42,7 +42,7 @@
         <div class="row align-items-center content">
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
             <h2>Sistem Informasi<br><span style="color: #6bb8a1;">Administrasi RT</span></h2>
-            <p class="lead">Solusi digital modern untuk pengelolaan administrasi Rukun Tetangga yang lebih efisien dan terpercaya dengan teknologi terkini</p>
+            <p class="lead">Website berbasis Chatbot AI untuk digitalisasi laporan, surat, dan pendataan warga yang lebih efisien.</p>
             <div class="cta-buttons" data-aos="fade-up" data-aos-delay="300">
               @if(auth()->check() || session('head_of_family_id'))
                 @if(session('head_of_family_id'))
@@ -60,7 +60,7 @@
           </div>
           <div class="col-lg-6">
             <div class="hero-image">
-              <img src="assets/img/bg.png" alt="Portfolio Hero Image" class="img-fluid" data-aos="zoom-out" data-aos-delay="300">
+              <img src="assets/img/fotountukwebsite .jpg" alt="Portfolio Hero Image" class="img-fluid" data-aos="zoom-out" data-aos-delay="300">
               <div class="shape-1"></div>
               <div class="shape-2"></div>
             </div>
@@ -91,7 +91,7 @@
           <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
             <div class="vision-mission-card mission-card">
               <div class="vision-mission-icon">
-                <i class="bi bi-target"></i>
+                <i class="bi bi-eye"></i>
               </div>
               <h3>Misi</h3>
               <ul class="mission-list">
@@ -154,12 +154,6 @@
               <p>Data terenkripsi dan terlindungi dengan sistem keamanan berlapis</p>
             </div>
           </div>
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
-            <div class="feature-item">
-              <i class="bi bi-graph-up"></i>
-              <h3>Laporan & Analitik</h3>
-              <p>Analisis data dan laporan komprehensif untuk pengambilan keputusan</p>
             </div>
           </div>
         </div>
@@ -222,184 +216,179 @@
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>Struktur Pengurus RT</h2>
-        <div class="title-shape">
-          <svg viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 0,10 C 40,0 60,20 100,10 C 140,0 160,20 200,10" fill="none" stroke="currentColor" stroke-width="2"></path>
-          </svg>
-        </div>
+        <h2>Struktur Pengurus RT 02</h2>
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="row justify-content-center">
-          <div class="col-lg-12">
-            <div class="org-chart">
-              <!-- Level 1: KETUA -->
-              <div class="org-level level-1" data-aos="fade-up" data-aos-delay="100">
-                <div class="row justify-content-center">
-                  <div class="col-lg-3">
-                    <div class="org-card text-center">
-                      <div class="org-card-header bg-primary">
-                        <i class="bi bi-person-fill" style="font-size: 2rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h5 class="mb-2">KETUA</h5>
-                        <p class="mb-0 fw-bold">Hudariati</p>
-                      </div>
+        <div class="org-tree-wrapper">
+          
+          <!-- Level 1: KETUA RT -->
+          <div class="org-level-1">
+            <div class="org-card-box org-card-top">
+              <div class="org-card text-center">
+                <div class="org-card-header bg-primary">
+                  <i class="bi bi-person-badge-fill me-2 fs-5"></i>
+                  <span class="fw-bold fs-6">KETUA RT</span>
+                </div>
+                <div class="org-card-body">
+                  <p class="mb-0 fw-bold fs-5 text-dark">Hudariati</p>
+                </div>
+              </div>
+            </div>
+            <!-- Line down from Ketua -->
+            <div class="tree-line-v tree-line-v-1 d-none d-md-block"></div>
+          </div>
+
+          <!-- Level 2: SEKRETARIS & BENDAHARA -->
+          <div class="org-level-2-wrapper">
+            <!-- Horizontal Connector Line between Sekretaris & Bendahara -->
+            <div class="tree-line-h-level2 d-none d-md-block"></div>
+            
+            <div class="row justify-content-center g-4 w-100">
+              <div class="col-md-5 col-lg-4 col-sm-6">
+                <div class="org-card-item">
+                  <div class="tree-line-v-top d-none d-md-block"></div>
+                  <div class="org-card text-center">
+                    <div class="org-card-header bg-success">
+                      <i class="bi bi-file-earmark-text-fill me-2 fs-5"></i>
+                      <span class="fw-bold fs-6">SEKRETARIS</span>
+                    </div>
+                    <div class="org-card-body">
+                      <p class="mb-0 fw-bold text-dark">Fikri Ubaydillah</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- SVG Connector - Level 1 to Level 2 -->
-              <svg class="connector-svg" viewBox="0 0 100 80" preserveAspectRatio="none">
-                <line x1="50" y1="0" x2="50" y2="30" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="50" y1="30" x2="20" y2="30" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="50" y1="30" x2="80" y2="30" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="20" y1="30" x2="20" y2="80" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="80" y1="30" x2="80" y2="80" stroke="#6bb8a1" stroke-width="2"/>
-              </svg>
-
-              <!-- Level 2: Sekretaris & Bendahara -->
-              <div class="org-level level-2" data-aos="fade-up" data-aos-delay="150">
-                <div class="row justify-content-center g-4">
-                  <div class="col-lg-3">
-                    <div class="org-card text-center">
-                      <div class="org-card-header bg-success">
-                        <i class="bi bi-file-text" style="font-size: 2rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h5 class="mb-2">SEKRETARIS</h5>
-                        <p class="mb-0 fw-bold">Fikri Ubaydillah</p>
-                      </div>
+              <div class="col-md-5 col-lg-4 col-sm-6">
+                <div class="org-card-item">
+                  <div class="tree-line-v-top d-none d-md-block"></div>
+                  <div class="org-card text-center">
+                    <div class="org-card-header bg-warning">
+                      <i class="bi bi-wallet2 me-2 fs-5"></i>
+                      <span class="fw-bold fs-6">BENDAHARA</span>
                     </div>
-                  </div>
-                  <div class="col-lg-3">
-                    <div class="org-card text-center">
-                      <div class="org-card-header bg-warning">
-                        <i class="bi bi-cash-coin" style="font-size: 2rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h5 class="mb-2">BENDAHARA</h5>
-                        <p class="mb-0 fw-bold">Vitri Prahantini</p>
-                        <p class="mb-0 fw-bold">Tri Tusiwartini</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- SVG Connector - Level 2 to Level 3 -->
-              <svg class="connector-svg-large" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <line x1="25" y1="0" x2="25" y2="35" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="75" y1="0" x2="75" y2="35" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="8" y1="35" x2="92" y2="35" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="12" y1="35" x2="12" y2="100" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="27" y1="35" x2="27" y2="100" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="42" y1="35" x2="42" y2="100" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="58" y1="35" x2="58" y2="100" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="73" y1="35" x2="73" y2="100" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="85" y1="35" x2="85" y2="100" stroke="#6bb8a1" stroke-width="2"/>
-                <line x1="92" y1="35" x2="92" y2="100" stroke="#6bb8a1" stroke-width="2"/>
-              </svg>
-
-              <!-- Level 3: Bidang-Bidang -->
-              <div class="org-level level-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="row g-2 bidang-row">
-                  <div class="bidang-col">
-                    <div class="org-card">
-                      <div class="org-card-header bg-info">
-                        <i class="bi bi-people" style="font-size: 1.4rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h6 class="mb-2">Bidang Humas</h6>
-                        <p class="mb-1 small">Subiyanto</p>
-                        <p class="mb-0 small">yuliantrini</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="bidang-col">
-                    <div class="org-card">
-                      <div class="org-card-header bg-info">
-                        <i class="bi bi-building" style="font-size: 1.4rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h6 class="mb-2">Bidang Keagamaan</h6>
-                        <p class="mb-1 small">Matsani</p>
-                        <p class="mb-0 small">Nachrowi</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="bidang-col">
-                    <div class="org-card">
-                      <div class="org-card-header bg-danger">
-                        <i class="bi bi-shield-exclamation" style="font-size: 1.4rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h6 class="mb-2">Bidang Pemuda & Olahraga</h6>
-                        <p class="mb-1 small">Joni Akta</p>
-                        <p class="mb-0 small">Dwi Wanti</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="bidang-col">
-                    <div class="org-card">
-                      <div class="org-card-header bg-secondary">
-                        <i class="bi bi-book" style="font-size: 1.4rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h6 class="mb-2">Bidang Pendidikan IT dan UKM</h6>
-                        <p class="mb-1 small">Jani Sabtriady</p>
-                        <p class="mb-0 small">yuyun Suhaedah</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="bidang-col">
-                    <div class="org-card">
-                      <div class="org-card-header bg-success">
-                        <i class="bi bi-tree" style="font-size: 1.4rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h6 class="mb-2">Bidang PLKH</h6>
-                          <p class="mb-1 small">Kuswa</p>
-                        <p class="mb-0 small">Khoiri</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="bidang-col">
-                    <div class="org-card">
-                      <div class="org-card-header bg-info">
-                        <i class="bi bi-heart" style="font-size: 1.4rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h6 class="mb-2">Bidang PKK & Posyandu</h6>
-                        <p class="mb-1 small">Susi H</p>
-                        <p class="mb-0 small">Hamidah</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="bidang-col">
-                    <div class="org-card">
-                      <div class="org-card-header bg-primary">
-                        <i class="bi bi-shield-check" style="font-size: 1.4rem; color: white;"></i>
-                      </div>
-                      <div class="org-card-body">
-                        <h6 class="mb-2">Bidang Keamanan</h6>
-                         <p class="mb-1 small">M. Fajrin</p>
-                        <p class="mb-0 small">Hasan Bakar</p>
-                      </div>
+                    <div class="org-card-body">
+                      <p class="mb-1 fw-bold text-dark">Vitri Prahantini</p>
+                      <p class="mb-0 fw-bold text-dark">Tri Tusiwartini</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            
+            <!-- Line down from Level 2 to Level 3 -->
+            <div class="tree-line-v tree-line-v-2 d-none d-lg-block"></div>
           </div>
+
+          <!-- Level 3: BIDANG-BIDANG (7 BIDANG) -->
+          <div class="org-level-3-wrapper">
+            <!-- Horizontal Distribution Line for 7 Bidang -->
+            <div class="tree-line-h-level3 d-none d-lg-block"></div>
+
+            <div class="bidang-grid">
+              
+              <div class="bidang-col">
+                <div class="tree-line-v-stem d-none d-lg-block"></div>
+                <div class="org-card text-center">
+                  <div class="org-card-header bg-info">
+                    <i class="bi bi-people-fill fs-5"></i>
+                  </div>
+                  <div class="org-card-body">
+                    <h6>Bidang Humas</h6>
+                    <p>Subiyanto</p>
+                    <p>Yuliantrini</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bidang-col">
+                <div class="tree-line-v-stem d-none d-lg-block"></div>
+                <div class="org-card text-center">
+                  <div class="org-card-header bg-info">
+                    <i class="bi bi-moon-stars-fill fs-5"></i>
+                  </div>
+                  <div class="org-card-body">
+                    <h6>Keagamaan</h6>
+                    <p>Matsani</p>
+                    <p>Nachrowi</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bidang-col">
+                <div class="tree-line-v-stem d-none d-lg-block"></div>
+                <div class="org-card text-center">
+                  <div class="org-card-header bg-danger">
+                    <i class="bi bi-trophy-fill fs-5"></i>
+                  </div>
+                  <div class="org-card-body">
+                    <h6>Pemuda & Olahraga</h6>
+                    <p>Joni Akta</p>
+                    <p>Dwi Wanti</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bidang-col">
+                <div class="tree-line-v-stem d-none d-lg-block"></div>
+                <div class="org-card text-center">
+                  <div class="org-card-header bg-secondary">
+                    <i class="bi bi-laptop-fill fs-5"></i>
+                  </div>
+                  <div class="org-card-body">
+                    <h6>Pendidikan, IT & UKM</h6>
+                    <p>Jani Sabtriady</p>
+                    <p>Yuyun Suhaedah</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bidang-col">
+                <div class="tree-line-v-stem d-none d-lg-block"></div>
+                <div class="org-card text-center">
+                  <div class="org-card-header bg-success">
+                    <i class="bi bi-tree-fill fs-5"></i>
+                  </div>
+                  <div class="org-card-body">
+                    <h6>Bidang PLKH</h6>
+                    <p>Kuswa</p>
+                    <p>Khoiri</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bidang-col">
+                <div class="tree-line-v-stem d-none d-lg-block"></div>
+                <div class="org-card text-center">
+                  <div class="org-card-header bg-primary">
+                    <i class="bi bi-heart-pulse-fill fs-5"></i>
+                  </div>
+                  <div class="org-card-body">
+                    <h6>PKK & Posyandu</h6>
+                    <p>Susi H</p>
+                    <p>Hamidah</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bidang-col">
+                <div class="tree-line-v-stem d-none d-lg-block"></div>
+                <div class="org-card text-center">
+                  <div class="org-card-header bg-dark">
+                    <i class="bi bi-shield-lock-fill fs-5"></i>
+                  </div>
+                  <div class="org-card-body">
+                    <h6>Bidang Keamanan</h6>
+                    <p>M. Fajrin</p>
+                    <p>Hasan Bakar</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -480,13 +469,13 @@
 
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>Frequently Asked Questions</h2>
+        <h2>Pertanyaan yang sering diajukan</h2>
         <div class="title-shape">
           <svg viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
             <path d="M 0,10 C 40,0 60,20 100,10 C 140,0 160,20 200,10" fill="none" stroke="currentColor" stroke-width="2"></path>
           </svg>
         </div>
-        <p>Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur vel illum qui dolorem</p>
+        <p>Belum menemukan jawaban yang kamu cari? Chatbot Asisten RT siap membantu kapan saja, atau simak dulu pertanyaan yang sering diajukan berikut ini.</p>
       </div><!-- End Section Title -->
 
       <div class="container">
@@ -498,49 +487,93 @@
             <div class="faq-container">
 
               <div class="faq-item faq-active">
-                <h3>Non consectetur a erat nam at lectus urna duis?</h3>
+                <h3>Dokumen apa saja yang perlu disiapkan untuk membuat surat keterangan domisili?</h3>
                 <div class="faq-content">
-                  <p>Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.</p>
+                  <div class="faq-body">
+                    <ol class="mb-0">
+                      <li>Fotokopi KTP</li>
+                      <li>Fotokopi KK</li>
+                      <li>Surat pengantar dari RT/RW</li>
+                      <li>Formulir permohonan yang telah diisi</li>
+                      <li>Dokumen pendukung lainnya sesuai kebutuhan</li>
+                    </ol>
+                  </div>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Feugiat scelerisque varius morbi enim nunc faucibus?</h3>
+                <h3>Jenis surat pengantar apa saja yang bisa diajukan melalui sistem ini (misalnya SKCK, domisili, usaha, dll)?</h3>
                 <div class="faq-content">
-                  <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
+                  <div class="faq-body">
+                    <ol class="mb-0">
+                      <li>Surat SKCK</li>
+                      <li>Surat Domisili</li>
+                      <li>Surat Usaha</li>
+                      <li>Surat Keterangan Tidak Mampu (SKTM)</li>
+                      <li>Surat Pengantar Nikah</li>
+                      <li>Surat Keterangan Pindah</li>
+                      <li>Surat Keterangan Kehilangan</li>
+                      <li>Surat Keterangan Kelahiran</li>
+                      <li>Surat Keterangan Kematian</li>
+                    </ol>
+                  </div>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Dolor sit amet consectetur adipiscing elit pellentesque?</h3>
+                <h3>Apa saja syarat yang diperlukan untuk mengurus surat pengantar pembuatan KTP?</h3>
                 <div class="faq-content">
-                  <p>Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis</p>
+                  <div class="faq-body">
+                    <ol class="mb-0">
+                      <li>Fotokopi KK</li>
+                      <li>Surat pengantar dari RT/RW</li>
+                      <li>Formulir permohonan yang telah diisi</li>
+                    </ol>
+                  </div>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla?</h3>
+                <h3>Apa saja syarat yang diperlukan untuk mengurus surat pengantar nikah dari RT?</h3>
                 <div class="faq-content">
-                  <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
+                  <div class="faq-body">
+                    <ul class="mb-0">
+                      <li>Fotokopi KTP calon pengantin pria dan wanita</li>
+                      <li>Surat pengantar dari RT/RW</li>
+                      <li>Formulir permohonan yang telah diisi</li>
+                      <li>Fotokopi akta kelahiran</li>
+                      <li>Surat persetujuan orang tua/wali (jika diperlukan)</li>
+                    </ul>
+                  </div>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Tempus quam pellentesque nec nam aliquam sem et tortor?</h3>
+                <h3>Apa saja syarat yang diperlukan untuk mengajukan pembuatan KK baru melalui RT?</h3>
                 <div class="faq-content">
-                  <p>Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in</p>
+                  <div class="faq-body">
+                    <ol class="mb-0">
+                      <li>Fotokopi KTP</li>
+                    </ol>
+                  </div>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Perspiciatis quod quo quos nulla quo illum ullam?</h3>
+                <h3>Untuk keperluan apa saja SKTM ini biasanya digunakan (sekolah, kesehatan, dll)?</h3>
                 <div class="faq-content">
-                  <p>Enim ea facilis quaerat voluptas quidem et dolorem. Quis et consequatur non sed in suscipit sequi. Distinctio ipsam dolore et.</p>
+                  <div class="faq-body">
+                    <ol class="mb-0">
+                      <li>Untuk keperluan pendaftaran sekolah</li>
+                      <li>Untuk keperluan pendaftaran rumah sakit</li>
+                      <li>Untuk keperluan pendaftaran beasiswa</li>
+                    </ol>
+                  </div>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
@@ -565,7 +598,7 @@
               <path d="M 0,10 C 40,0 60,20 100,10 C 140,0 160,20 200,10" fill="none" stroke="currentColor" stroke-width="2"></path>
             </svg>
           </div>
-          <p>Lokasi rumah Ketua RT untuk keperluan administrasi dan konsultasi masyarakat</p>
+          <p></p>
         </div>
 
         <div class="row align-items-stretch" data-aos="fade-up" data-aos-delay="100">
@@ -583,7 +616,7 @@
                   <i class="bi bi-geo-alt"></i>
                   <div>
                     <h4>Alamat</h4>
-                    <p>Jl. Rukun Tetangga No. 123<br>Kota/Kabupaten, Provinsi 12345</p>
+                    <p>Jl. Bhakti 3 RT 02/ RW 06 No.100<br>Cimanggis, Depok, 16451</p>
                   </div>
                 </div>
 
@@ -591,7 +624,8 @@
                   <i class="bi bi-telephone"></i>
                   <div>
                     <h4>Nomor Telepon</h4>
-                    <p>+62 812-3456-7890<br>+62 274-1234567</p>
+                    <p> 0895391790535<br>
+
                   </div>
                 </div>
 
@@ -599,7 +633,7 @@
                   <i class="bi bi-clock"></i>
                   <div>
                     <h4>Jam Konsultasi</h4>
-                    <p>Senin - Jumat: 09:00 - 17:00<br>Sabtu: 09:00 - 12:00</p>
+                    <p>Senin - Jumat: 09:00 - 17:00<br>Sabtu - Minggu 09:00 - 12:00</p>
                   </div>
                 </div>
               </div>
