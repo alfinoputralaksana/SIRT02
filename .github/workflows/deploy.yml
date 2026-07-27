@@ -12,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FTP_SERVER: ftp.sirt02.my.id
-      FTP_USERNAME: sirt02@sirt02.my.id
+      FTP_USERNAME: ${{ secrets.FTP_USERNAME || 'sirt02@sirt02.my.id' }}
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      DEPLOY_METHOD: ${{ secrets.DEPLOY_METHOD || 'ftps' }}
+      DEPLOY_METHOD: ${{ secrets.DEPLOY_METHOD || 'ftp' }}
 
     steps:
       - name: Get latest code
@@ -29,7 +29,7 @@ jobs:
         run: |
           composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
 
-      - name: Sync Files via FTP
+      - name: Sync Core Files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ env.FTP_SERVER }}
@@ -43,10 +43,23 @@ jobs:
             **/.git*/**
             **/node_modules/**
             **/tests/**
+            public/**
             .env
             phpunit.xml
             README.md
 
+      - name: Sync Public Assets via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ env.FTP_SERVER }}
+          username: ${{ env.FTP_USERNAME }}
+          password: ${{ env.FTP_PASSWORD }}
+          protocol: ${{ env.DEPLOY_METHOD }}
+          port: 21
+          local-dir: public/
+          server-dir: ./public_html/
+
       - name: Deployment Summary
         run: |
-          echo "✓ Files uploaded via FTP."
+          echo "✓ Core files and Public assets synced successfully via FTP."
+
