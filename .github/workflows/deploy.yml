@@ -1,131 +1,35 @@
-name: Deploy Laravel Framework
+# name: Laravel
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
 
-jobs:
-  deploy:
-    name: Build & Deploy to cPanel
-    runs-on: ubuntu-latest
-    env:
-      FTP_SERVER: ftp.sirt02.my.id
-      FTP_USERNAME: ${{ secrets.FTP_USERNAME || 'sirt02@sirt02.my.id' }}
-      FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-      DEPLOY_METHOD: ${{ secrets.DEPLOY_METHOD || 'ftp' }}
+# jobs:
+#   laravel-tests:
 
-    steps:
-      - name: Get latest code
-        uses: actions/checkout@v4
+#     runs-on: ubuntu-latest
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, xml, ctype, iconv, json, zip, mysql
-
-      - name: Install Composer Dependencies
-        run: |
-          composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
-
-      - name: Setup Node.js & Build Frontend Assets
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install & Build NPM
-        run: |
-          npm install
-          npm run build
-
-      - name: Create Automated Artisan Runner Script
-        run: |
-          cat << 'EOF' > public/artisan_runner.php
-          <?php
-          define('LARAVEL_START', microtime(true));
-
-          // Deteksi lokasi autoloader & bootstrap
-          if (file_exists(__DIR__.'/../vendor/autoload.php')) {
-              require __DIR__.'/../vendor/autoload.php';
-              $app = require_once __DIR__.'/../bootstrap/app.php';
-          } elseif (file_exists(__DIR__.'/../../vendor/autoload.php')) {
-              require __DIR__.'/../../vendor/autoload.php';
-              $app = require_once __DIR__.'/../../bootstrap/app.php';
-          } else {
-              die("Error: vendor/autoload.php not found.\n");
-          }
-
-          $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-
-          echo "<pre>=== STARTING AUTOMATED ARTISAN TASKS ===\n\n";
-
-          try {
-              echo "1. Executing: php artisan migrate --force\n";
-              $kernel->call('migrate', ['--force' => true]);
-              echo $kernel->output() . "\n";
-
-              echo "2. Executing: php artisan db:seed --force\n";
-              $kernel->call('db:seed', ['--force' => true]);
-              echo $kernel->output() . "\n";
-
-              echo "3. Executing: php artisan optimize:clear\n";
-              $kernel->call('optimize:clear');
-              echo $kernel->output() . "\n";
-
-              echo "=== ALL ARTISAN TASKS COMPLETED SUCCESSFULLY ===</pre>";
-          } catch (\Exception $e) {
-              echo "Artisan Error: " . $e->getMessage() . "\n";
-          } finally {
-              @unlink(__FILE__);
-          }
-          EOF
-
-      - name: Sync Application Files via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ env.FTP_SERVER }}
-          username: ${{ env.FTP_USERNAME }}
-          password: ${{ env.FTP_PASSWORD }}
-          protocol: ${{ env.DEPLOY_METHOD }}
-          port: 21
-          server-dir: ./
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/vendor/**
-            **/storage/**
-            **/bootstrap/cache/**
-            **/tests/**
-            .env
-            phpunit.xml
-            README.md
-            .cagefs/**
-            .caldav/**
-            .cl.selector/**
-            .clwpos/**
-            .cpanel/**
-            .htpasswds/**
-            .koality/**
-            .softaculous/**
-            .spamassassin/**
-            .subaccounts/**
-            .trash/**
-            etc/**
-            logs/**
-            mail/**
-            public_ftp/**
-            public_html/**
-            ssl/**
-
-      - name: Trigger Automated Artisan Tasks
-        run: |
-          echo "Executing Artisan commands via remote HTTP trigger..."
-          curl -s https://sirt02.my.id/artisan_runner.php
-
-      - name: Deployment Summary
-        run: |
-          echo "✓ Single-step FTP deployment completed successfully."
+#     steps:
+#     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+#       with:
+#         php-version: '8.0'
+#     - uses: actions/checkout@v4
+#     - name: Copy .env
+#       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+#     - name: Install Dependencies
+#       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+#     - name: Generate key
+#       run: php artisan key:generate
+#     - name: Directory Permissions
+#       run: chmod -R 777 storage bootstrap/cache
+#     - name: Create Database
+#       run: |
+#         mkdir -p database
+#         touch database/database.sqlite
+#     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
+#       env:
+#         DB_CONNECTION: sqlite
+#         DB_DATABASE: database/database.sqlite
+#       run: php artisan test
